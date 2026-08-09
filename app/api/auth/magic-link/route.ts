@@ -14,6 +14,19 @@ const Body = z.object({
 });
 
 export async function POST(req: Request) {
+  try {
+    return await handle(req);
+  } catch (e) {
+    const message = e instanceof Error ? e.message : String(e);
+    console.error("magic-link failed:", message);
+    return NextResponse.json(
+      { error: "server_error", detail: message },
+      { status: 500 }
+    );
+  }
+}
+
+async function handle(req: Request) {
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });
