@@ -58,7 +58,7 @@ export default async function DashboardHome() {
         <p className="text-sm font-medium text-ink-soft">{t("quickActions")}</p>
         <div className="mt-2 flex flex-wrap gap-2">
           <Link
-            href="/dashboard/store?tab=products"
+            href="/dashboard/products/new"
             className="rounded-control bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white shadow-card hover:bg-primary-700"
           >
             + {t("addProduct")}

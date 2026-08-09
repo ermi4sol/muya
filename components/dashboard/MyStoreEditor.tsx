@@ -275,13 +275,13 @@ function ProductsTab({ initial }: { initial: ProductRow[] }) {
     <div className="rounded-card border border-line bg-surface p-5 shadow-card">
       <div className="flex items-center justify-between">
         <p className="font-semibold text-ink">{t("productsTitle")}</p>
-        <span className="rounded-control bg-accent-100 px-3 py-1.5 text-xs font-semibold text-accent-900">
-          + {t("addProduct")} · {t("soon")}
-        </span>
+        <Link
+          href="/dashboard/products/new"
+          className="rounded-control bg-primary-600 px-3 py-1.5 text-xs font-semibold text-white shadow-card hover:bg-primary-700"
+        >
+          + {t("addProduct")}
+        </Link>
       </div>
-      <p className="mt-2 rounded-control bg-primary-50 px-3 py-2 text-xs text-primary-800">
-        {t("productsSoon")}
-      </p>
       {items.length === 0 ? (
         <p className="mt-3 text-sm text-ink-faint">{t("productsEmpty")}</p>
       ) : (
@@ -292,14 +292,17 @@ function ProductsTab({ initial }: { initial: ProductRow[] }) {
               className="flex items-center gap-3 rounded-control border border-line p-3"
             >
               <span className="text-xl">{TYPE_ICONS[p.type] ?? "📦"}</span>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-semibold text-ink">
+              <Link
+                href={`/dashboard/products/${p.id}`}
+                className="min-w-0 flex-1"
+              >
+                <p className="truncate text-sm font-semibold text-ink hover:text-primary-700">
                   {p.title}
                 </p>
                 <p className="text-xs text-ink-faint">
                   {Number(p.price).toLocaleString()} {p.currency}
                 </p>
-              </div>
+              </Link>
               <button
                 onClick={() => toggle(p)}
                 className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
