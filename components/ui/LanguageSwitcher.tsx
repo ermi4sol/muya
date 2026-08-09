@@ -1,21 +1,20 @@
 "use client";
 
-import { useTransition } from "react";
 import { useLocale } from "next-intl";
-import { usePathname, useRouter } from "@/i18n/navigation";
-import { locales, localeNames, type Locale } from "@/i18n/routing";
+import { usePathname } from "@/i18n/navigation";
+import { locales, localeNames } from "@/i18n/routing";
 
 export function LanguageSwitcher() {
   const locale = useLocale();
-  const router = useRouter();
+  // next-intl's usePathname returns the path WITHOUT any locale prefix
   const pathname = usePathname();
-  const [, startTransition] = useTransition();
 
   function onChange(next: string) {
-    startTransition(() => {
-      router.replace(pathname, { locale: next as Locale });
-      router.refresh();
-    });
+    // Direct navigation to the target locale URL — fast and identical for
+    // every language (all pages are statically generated).
+    const path = pathname === "/" ? "" : pathname;
+    const target = next === "en" ? path || "/" : `/${next}${path}`;
+    window.location.assign(target);
   }
 
   return (
