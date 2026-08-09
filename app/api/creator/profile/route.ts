@@ -41,7 +41,14 @@ export async function PATCH(req: Request) {
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });
   }
 
+  const RESERVED = new Set([
+    "admin", "api", "dashboard", "signin", "signup", "restore", "account",
+    "order", "terms", "support", "en", "am", "om", "ti", "so", "muya",
+  ]);
   const fields = parsed.data;
+  if (fields.store_slug && RESERVED.has(fields.store_slug)) {
+    return NextResponse.json({ error: "slug_taken" }, { status: 409 });
+  }
   if (fields.store_slug) {
     const { data: taken } = await supabaseAdmin()
       .from("creators")

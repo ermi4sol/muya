@@ -29,13 +29,19 @@ export async function findCreatorByEmail(
   return data;
 }
 
+const RESERVED_SLUGS = new Set([
+  "admin", "api", "dashboard", "signin", "signup", "restore", "account",
+  "order", "terms", "support", "en", "am", "om", "ti", "so", "muya",
+]);
+
 function slugify(base: string): string {
   const cleaned = base
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 30);
-  return cleaned || "store";
+  if (!cleaned || RESERVED_SLUGS.has(cleaned)) return `${cleaned || "store"}-shop`;
+  return cleaned;
 }
 
 /** Create a creator (+ free subscription) on first verified magic link. */

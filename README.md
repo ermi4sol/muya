@@ -35,8 +35,8 @@ MUYA is a creator-commerce platform for Ethiopian creators — one storefront li
 | 4 | Landing page (full marketing site) | ✅ Done — 2026-08-09 |
 | 5 | Creator dashboard core + store editor | ✅ Done — 2026-08-09 |
 | 6 | Product builders (all ten types) | ✅ Done — 2026-08-09 |
-| 7 | Storefront + checkout (order-request model) | ⏳ Next |
-| 8 | Order approval + fulfillment engine + Calendar/Zoom integrations | Planned |
+| 7 | Storefront + checkout (order-request model) | ✅ Done — 2026-08-09 |
+| 8 | Order approval + fulfillment engine + Calendar/Zoom integrations | ⏳ Next |
 | 9 | Community + realtime | Planned |
 | 10 | Money: ledger, income tab, payouts | Planned |
 | 11 | Admin panel (full) | Planned |
