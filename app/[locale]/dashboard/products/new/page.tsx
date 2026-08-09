@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getUserSession } from "@/lib/auth/session";
 import { Link } from "@/i18n/navigation";
-import { TYPE_META } from "@/components/dashboard/ProductBuilder";
+import { TYPE_META } from "@/lib/product-types";
 
 export default async function NewProductPage() {
   const session = await getUserSession();
