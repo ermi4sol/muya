@@ -24,5 +24,33 @@
     "step4Title": "Lacag hel",
     "step4Body": "La soco dakhligaaga oo codso lacag-bixin goor kasta.",
     "footerRights": "Dhammaan xuquuqda way xifdisan yihiin."
+  },
+  "auth": {
+    "signupTitle": "Samee dukaankaaga",
+    "signinTitle": "Soo dhawoow",
+    "emailLabel": "Cinwaanka iimaylka",
+    "continue": "Sii wad",
+    "noPassword": "Waxaan kuu soo diri doonnaa xiriiriye ammaan ah — furaha sirta looma baahna.",
+    "checkEmailTitle": "Fiiri iimaylkaaga",
+    "checkEmailBody": "Waxaan xiriiriye gelitaan ammaan ah u dirnay",
+    "resend": "Dib u dir xiriiriyaha",
+    "switchToSignup": "Ma ku cusub tahay MUYA? Samee dukaankaaga",
+    "switchToSignin": "Dukaan ma leedahay? Gal",
+    "restoreTitle": "Ku noqo wixii aad iibsatay",
+    "restoreBody": "Geli iimaylka aad isticmaashay markaad iibsanaysay; waxaan kuu soo diri doonnaa xiriiriye gelitaan.",
+    "sendLink": "Ii soo dir xiriiriye",
+    "errInvalid": "Xiriiriyahani waa khalad ama wuu dhacay — codso mid cusub.",
+    "errRate": "Isku dayo aad u badan — fadlan mar dambe isku day.",
+    "errSuspended": "Akoonkan waa la joojiyay. La xiriir taageerada.",
+    "errGeneric": "Khalad ayaa dhacay — fadlan isku day mar kale."
+  },
+  "dashboard": {
+    "welcome": "Soo dhawoow",
+    "signOut": "Ka bax",
+    "building": "Daashboorkaaga waa la dhisayaa — dejinta dukaanka waxay imanaysaa marxaladda xigta."
+  },
+  "account": {
+    "title": "Wixii aad iibsatay",
+    "empty": "Weli waxba ma jiraan — iibsigaagu halkan ayuu ka muuqan doonaa."
   }
 }

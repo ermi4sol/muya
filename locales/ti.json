@@ -24,5 +24,33 @@
     "step4Title": "ተኸፈል",
     "step4Body": "ኣታዊኻ ተኸታተል፣ ኣብ ዝኾነ እዋን ክፍሊት ሕተት።",
     "footerRights": "ኩሉ መሰላት ዝተሓለወ እዩ።"
+  },
+  "auth": {
+    "signupTitle": "ድኳንካ ፍጠር",
+    "signinTitle": "እንቋዕ ብደሓን መጻእካ",
+    "emailLabel": "ኣድራሻ ኢመይል",
+    "continue": "ቀጽል",
+    "noPassword": "ውሑስ ሊንክ ብኢመይል ክንሰደልካ ኢና — መሕለፊ ቃል ኣየድልን።",
+    "checkEmailTitle": "ኢመይልካ ርአ",
+    "checkEmailBody": "ውሑስ ናይ መእተዊ ሊንክ ሰዲድና ናብ",
+    "resend": "ሊንክ ደጊምካ ስደድ",
+    "switchToSignup": "ንMUYA ሓድሽ ዲኻ? ድኳንካ ፍጠር",
+    "switchToSignin": "ድኳን ኣለካ ድዩ? እቶ",
+    "restoreTitle": "ናብ ግዢታትካ ተመለስ",
+    "restoreBody": "ክትገዝእ ከለኻ ዝተጠቐምካሉ ኢመይል ኣእቱ፤ ናይ መእተዊ ሊንክ ክንሰደልካ ኢና።",
+    "sendLink": "ሊንክ ስደደለይ",
+    "errInvalid": "እዚ ሊንክ ቅኑዕ ኣይኮነን ወይ ግዜኡ ሓሊፉ እዩ — ሓድሽ ሕተት።",
+    "errRate": "ብዙሕ ፈተነታት — በጃኻ ጸኒሕካ ፈትን።",
+    "errSuspended": "እዚ ሕሳብ ታጊዱ እዩ። ደገፍ ተወከስ።",
+    "errGeneric": "ጌጋ ተፈጢሩ — በጃኻ ደጊምካ ፈትን።"
+  },
+  "dashboard": {
+    "welcome": "እንቋዕ ብደሓን መጻእካ",
+    "signOut": "ውጻእ",
+    "building": "ዳሽቦርድካ ይህነጽ ኣሎ — ናይ ድኳን ምድላው ኣብ ዝቕጽል ምዕራፍ ይመጽእ።"
+  },
+  "account": {
+    "title": "ግዢታትካ",
+    "empty": "ክሳብ ሕጂ ዋላ ሓደ የለን — ግዢታትካ ኣብዚ ክረኣዩ እዮም።"
   }
 }

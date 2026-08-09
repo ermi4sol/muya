@@ -24,5 +24,33 @@
     "step4Title": "Get paid",
     "step4Body": "Track your earnings and request a payout any time.",
     "footerRights": "All rights reserved."
+  },
+  "auth": {
+    "signupTitle": "Create your store",
+    "signinTitle": "Welcome back",
+    "emailLabel": "Email address",
+    "continue": "Continue",
+    "noPassword": "We'll email you a secure link — no password needed.",
+    "checkEmailTitle": "Check your email",
+    "checkEmailBody": "We sent a secure sign-in link to",
+    "resend": "Resend link",
+    "switchToSignup": "New to MUYA? Create your store",
+    "switchToSignin": "Already have a store? Sign in",
+    "restoreTitle": "Get back into your purchases",
+    "restoreBody": "Enter the email you used when buying and we'll send you an access link.",
+    "sendLink": "Send me a link",
+    "errInvalid": "That link is invalid or has expired — request a new one.",
+    "errRate": "Too many attempts — please try again later.",
+    "errSuspended": "This account is suspended. Contact support.",
+    "errGeneric": "Something went wrong — please try again."
+  },
+  "dashboard": {
+    "welcome": "Welcome",
+    "signOut": "Sign out",
+    "building": "Your dashboard is being built — store setup arrives in the next phase."
+  },
+  "account": {
+    "title": "Your purchases",
+    "empty": "Nothing here yet — your purchases will appear here."
   }
 }

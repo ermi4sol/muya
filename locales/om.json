@@ -24,5 +24,33 @@
     "step4Title": "Kaffaltii argadhu",
     "step4Body": "Galii kee hordofiitii yeroo barbaaddetti kaffaltii gaafadhu.",
     "footerRights": "Mirgi hundi seeraan eegamaa dha."
+  },
+  "auth": {
+    "signupTitle": "Suuqii kee uumi",
+    "signinTitle": "Baga nagaan dhufte",
+    "emailLabel": "Teessoo imeelii",
+    "continue": "Itti fufi",
+    "noPassword": "Liinkii nageenya qabu imeeliin siif ergina — jechi darbii hin barbaachisu.",
+    "checkEmailTitle": "Imeelii kee ilaali",
+    "checkEmailBody": "Liinkii seensaa nageenya qabu ergineerra gara",
+    "resend": "Liinkii irra deebi'ii ergi",
+    "switchToSignup": "MUYAf haaraa dha? Suuqii kee uumi",
+    "switchToSignin": "Suuqii qabdaa? Seeni",
+    "restoreTitle": "Gara bittaa keetti deebi'i",
+    "restoreBody": "Imeelii yeroo bittu fayyadamte galchi; liinkii seensaa siif ergina.",
+    "sendLink": "Liinkii naaf ergi",
+    "errInvalid": "Liinkiin kun sirrii miti yookiin yeroon isaa darbeera — haaraa gaafadhu.",
+    "errRate": "Yaalii baay'ee — turtee irra deebi'ii yaali.",
+    "errSuspended": "Herregni kun dhorkameera. Deeggarsa qunnami.",
+    "errGeneric": "Rakkoon uumameera — irra deebi'ii yaali."
+  },
+  "dashboard": {
+    "welcome": "Baga nagaan dhufte",
+    "signOut": "Ba'i",
+    "building": "Daashboordiin kee ijaaramaa jira — qindaa'inni suuqii marsaa itti aanutti dhufa."
+  },
+  "account": {
+    "title": "Bittaa kee",
+    "empty": "Ammatti homaa hin jiru — bittaan kee as mul'ata."
   }
 }

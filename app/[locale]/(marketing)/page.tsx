@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { use } from "react";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { Link } from "@/i18n/navigation";
 
 export default function LandingPage({
   params,
@@ -26,12 +27,18 @@ function Landing() {
         </span>
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
-          <button className="rounded-control px-3 py-1.5 text-sm font-medium text-primary-700 hover:bg-primary-50">
+          <Link
+            href="/signin"
+            className="rounded-control px-3 py-1.5 text-sm font-medium text-primary-700 hover:bg-primary-50"
+          >
             {t("nav.signIn")}
-          </button>
-          <button className="rounded-control bg-accent-400 px-3 py-1.5 text-sm font-semibold text-ink shadow-card hover:bg-accent-300">
+          </Link>
+          <Link
+            href="/signup"
+            className="rounded-control bg-accent-400 px-3 py-1.5 text-sm font-semibold text-ink shadow-card hover:bg-accent-300"
+          >
             {t("nav.signUp")}
-          </button>
+          </Link>
         </div>
       </header>
 
@@ -44,9 +51,12 @@ function Landing() {
           <p className="mx-auto mt-4 max-w-xl text-base text-ink-soft sm:text-lg">
             {t("landing.heroSubtitle")}
           </p>
-          <button className="mt-8 rounded-card bg-primary-600 px-6 py-3.5 text-base font-semibold text-white shadow-card transition hover:bg-primary-700">
+          <Link
+            href="/signup"
+            className="mt-8 inline-block rounded-card bg-primary-600 px-6 py-3.5 text-base font-semibold text-white shadow-card transition hover:bg-primary-700"
+          >
             {t("landing.heroCta")}
-          </button>
+          </Link>
         </section>
 
         {/* How it works */}

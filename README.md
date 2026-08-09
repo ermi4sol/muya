@@ -31,8 +31,8 @@ MUYA is a creator-commerce platform for Ethiopian creators — one storefront li
 | 0 | Setup: Netlify, Supabase, GitHub, Resend, Google Calendar API, Zoom API, env vars | ✅ Done — 2026-08-09 |
 | 1 | Foundations: Next.js scaffold, MUYA design system, i18n (5 locales), repo structure | ✅ Done — 2026-08-09 |
 | 2 | Database: 26-table schema, indexes, RLS lockdown, seed (see [docs/DATABASE-STRUCTURE.md](docs/DATABASE-STRUCTURE.md)) | ✅ Done — 2026-08-09 |
-| 3 | Authentication: magic links (creators/customers), admin password + TOTP MFA | ⏳ Next |
-| 4 | Landing page (full marketing site) | Planned |
+| 3 | Authentication: magic links (creators/customers), admin password + TOTP MFA | ✅ Done — 2026-08-09 |
+| 4 | Landing page (full marketing site) | ⏳ Next |
 | 5 | Creator dashboard core + store editor | Planned |
 | 6 | Product builders (all ten types) | Planned |
 | 7 | Storefront + checkout (order-request model) | Planned |
