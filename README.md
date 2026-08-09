@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MUYA
 
-## Getting Started
+**Sell anything. Get paid. One link.**
 
-First, run the development server:
+MUYA is a creator-commerce platform for Ethiopian creators — one storefront link that sells ten product types (digital downloads, courses, coaching calls, webinars, memberships, lead magnets, custom products, external links, communities, and physical goods), fully multilingual (English, Amharic, Afaan Oromoo, Tigrinya, Somali), with customers buying through passwordless email access.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+**Live:** https://mymuya.netlify.app
+
+## How it works (current launch model)
+
+- Customers place orders with **no online payment** (order-request model): checkout → order shows *pending* → the MUYA admin reviews the full order details and **approves or rejects** it → both customer and creator are notified by email, and approved customers receive their product automatically.
+- MUYA computes a **7% commission** per sale into a creator ledger; creators request payouts (bank/telebirr) which admins process.
+- **All features are currently free for every creator.** The three-tier system (Free / Growth / Business) exists in the platform config and will be activated later.
+- Chapa online payments and Cloudflare R2 storage are planned post-launch integrations (guides in `/docs` when delivered).
+
+## Tech stack
+
+| Role | Service |
+|---|---|
+| Frontend + serverless backend | Next.js (App Router) on Netlify |
+| Database / Auth / Storage / Realtime | Supabase (Postgres) |
+| Transactional email | Resend |
+| Calendar (coaching calls) | Google Calendar API (per-creator OAuth) |
+| Video sessions (webinars) | Zoom API (Server-to-Server OAuth) |
+| Internationalization | next-intl — `en`, `am`, `om`, `ti`, `so` |
+
+## Development progress
+
+| Phase | Scope | Status |
+|---|---|---|
+| 0 | Setup: Netlify, Supabase, GitHub, Resend, Google Calendar API, Zoom API, env vars | ✅ Done — 2026-08-09 |
+| 1 | Foundations: Next.js scaffold, MUYA design system, i18n (5 locales), repo structure | ✅ Done — 2026-08-09 |
+| 2 | Database: 26-table schema, indexes, RLS lockdown, seed (see [docs/DATABASE-STRUCTURE.md](docs/DATABASE-STRUCTURE.md)) | ✅ Done — 2026-08-09 |
+| 3 | Authentication: magic links (creators/customers), admin password + TOTP MFA | ⏳ Next |
+| 4 | Landing page (full marketing site) | Planned |
+| 5 | Creator dashboard core + store editor | Planned |
+| 6 | Product builders (all ten types) | Planned |
+| 7 | Storefront + checkout (order-request model) | Planned |
+| 8 | Order approval + fulfillment engine + Calendar/Zoom integrations | Planned |
+| 9 | Community + realtime | Planned |
+| 10 | Money: ledger, income tab, payouts | Planned |
+| 11 | Admin panel (full) | Planned |
+| 12 | Polish: full i18n, emails, analytics, security hardening | Planned |
+| 13 | Testing, go-live + Chapa/R2/tier hand-off guides | Planned |
+
+Full plan: [docs/MAIN-DEVELOPMENT-PLAN.md](docs/MAIN-DEVELOPMENT-PLAN.md) · Setup guide: [docs/SETUP-AND-DEPLOYMENT-GUIDE.md](docs/SETUP-AND-DEPLOYMENT-GUIDE.md)
+
+## Repository structure
+
+```
+/app                 → Next.js App Router routes ([locale]/ marketing, auth, storefront, dashboard, admin)
+/components          → shared UI components (MUYA design system)
+/lib                 → server logic: db, auth, payments, integrations, fulfillment, queue, i18n
+/locales             → translation files (en, am, om, ti, so)
+/supabase/migrations → versioned SQL migrations (applied to the live project)
+/docs                → plans, guides, database documentation
+/i18n                → next-intl routing/request configuration
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Local development
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+cp .env.example .env.local   # fill in values (see docs/SETUP-AND-DEPLOYMENT-GUIDE.md §6)
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Deploys automatically on push to `main`.
