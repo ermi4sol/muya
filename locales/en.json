@@ -1,0 +1,28 @@
+{
+  "common": {
+    "appName": "MUYA",
+    "loading": "Loading…",
+    "language": "Language",
+    "free": "Free",
+    "comingSoon": "Coming soon"
+  },
+  "nav": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up"
+  },
+  "landing": {
+    "heroTitle": "Sell anything. Get paid. One link.",
+    "heroSubtitle": "Your whole business in one link — courses, coaching, downloads, products and more. Built for Ethiopian creators.",
+    "heroCta": "Start selling — it's free",
+    "howItWorksTitle": "How it works",
+    "step1Title": "Create your store",
+    "step1Body": "Sign up with just your email — no password, no paperwork.",
+    "step2Title": "Add what you sell",
+    "step2Body": "Downloads, courses, coaching, physical products — ten ways to earn.",
+    "step3Title": "Share your link",
+    "step3Body": "One link in your TikTok bio is your whole storefront.",
+    "step4Title": "Get paid",
+    "step4Body": "Track your earnings and request a payout any time.",
+    "footerRights": "All rights reserved."
+  }
+}

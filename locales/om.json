@@ -1,0 +1,28 @@
+{
+  "common": {
+    "appName": "MUYA",
+    "loading": "Fe'aa jira…",
+    "language": "Afaan",
+    "free": "Bilisa",
+    "comingSoon": "Dhiyootti dhufa"
+  },
+  "nav": {
+    "signIn": "Seeni",
+    "signUp": "Galmaa'i"
+  },
+  "landing": {
+    "heroTitle": "Waan fedhe gurguri. Kaffaltii argadhu. Liinkii tokko.",
+    "heroSubtitle": "Daldalli kee guutuun liinkii tokko keessatti — koorsota, leenjii, faayiloota, oomishaalee fi kanneen biroo. Uumtota Itoophiyaatiif kan hojjetame.",
+    "heroCta": "Gurgurtaa jalqabi — bilisa dha",
+    "howItWorksTitle": "Akkaataa inni hojjetu",
+    "step1Title": "Suuqii kee uumi",
+    "step1Body": "Imeelii keetiin qofa galmaa'i — jecha darbii hin barbaachisu.",
+    "step2Title": "Waan gurgurtu dabali",
+    "step2Body": "Faayiloota, koorsota, leenjii, oomishaalee — karaa galii kudhan.",
+    "step3Title": "Liinkii kee qoodi",
+    "step3Body": "Liinkiin tokko bio TikTok kee irra jiru suuqii kee guutuu dha.",
+    "step4Title": "Kaffaltii argadhu",
+    "step4Body": "Galii kee hordofiitii yeroo barbaaddetti kaffaltii gaafadhu.",
+    "footerRights": "Mirgi hundi seeraan eegamaa dha."
+  }
+}

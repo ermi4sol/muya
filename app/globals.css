@@ -1,26 +1,77 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ===== MUYA design system =====
+   Deep warm teal primary, warm amber/gold accent, off-white background,
+   near-black text. Soft 12–16px radii, generous whitespace, mobile-first.
+   Fonts are injected via next/font in the locale layout:
+   --font-heading (Space Grotesk), --font-body (Inter),
+   --font-ethiopic (Noto Sans Ethiopic). */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@theme {
+  /* Primary — deep warm teal */
+  --color-primary-50: #eef6f5;
+  --color-primary-100: #d5eae8;
+  --color-primary-200: #a9d5d1;
+  --color-primary-300: #74b9b3;
+  --color-primary-400: #459a93;
+  --color-primary-500: #2a7f78;
+  --color-primary-600: #1d6a64;
+  --color-primary-700: #175550;
+  --color-primary-800: #134441;
+  --color-primary-900: #103836;
+  --color-primary-950: #082220;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  /* Accent — warm amber/gold (CTAs, highlights) */
+  --color-accent-50: #fdf8ed;
+  --color-accent-100: #f9edcc;
+  --color-accent-200: #f2d894;
+  --color-accent-300: #ecc15c;
+  --color-accent-400: #e7ad36;
+  --color-accent-500: #df911f;
+  --color-accent-600: #c56f18;
+  --color-accent-700: #a45117;
+  --color-accent-800: #864019;
+  --color-accent-900: #6e3518;
+
+  /* Surfaces & ink */
+  --color-bg: #faf8f4;
+  --color-surface: #ffffff;
+  --color-ink: #16211f;
+  --color-ink-soft: #51605d;
+  --color-ink-faint: #8a9693;
+  --color-line: #e6e2da;
+
+  /* Status */
+  --color-success: #1e8e5a;
+  --color-warning: #d97706;
+  --color-danger: #d13b3b;
+
+  /* Typography — self-hosted via @fontsource-variable packages */
+  --font-heading: "Space Grotesk Variable", "Noto Sans Ethiopic Variable",
+    ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter Variable", "Noto Sans Ethiopic Variable", ui-sans-serif,
+    system-ui, sans-serif;
+
+  /* Radii — MUYA uses soft 12–16px corners */
+  --radius-card: 16px;
+  --radius-control: 12px;
+
+  /* Shadows — subtle, warm */
+  --shadow-card: 0 1px 2px rgb(22 33 31 / 0.04), 0 4px 16px rgb(22 33 31 / 0.06);
+  --shadow-sheet: 0 -8px 32px rgb(22 33 31 / 0.12);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading);
+  letter-spacing: -0.02em;
 }

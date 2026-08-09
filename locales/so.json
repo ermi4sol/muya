@@ -1,0 +1,28 @@
+{
+  "common": {
+    "appName": "MUYA",
+    "loading": "Waa la soo dejinayaa…",
+    "language": "Luqad",
+    "free": "Bilaash",
+    "comingSoon": "Dhawaan"
+  },
+  "nav": {
+    "signIn": "Gal",
+    "signUp": "Isdiiwaangeli"
+  },
+  "landing": {
+    "heroTitle": "Iibi wax kasta. Lacag hel. Hal xiriiriye.",
+    "heroSubtitle": "Ganacsigaaga oo dhan hal xiriiriye — koorsooyin, tababar, faylal, alaabo iyo wax kale. Loo dhisay abuurayaasha Itoobiya.",
+    "heroCta": "Bilow iibinta — waa bilaash",
+    "howItWorksTitle": "Sida ay u shaqeyso",
+    "step1Title": "Samee dukaankaaga",
+    "step1Body": "Iska diiwaangeli iimaylkaaga oo keliya — furaha sirta looma baahna.",
+    "step2Title": "Ku dar waxa aad iibiso",
+    "step2Body": "Faylal, koorsooyin, tababar, alaabo — toban dariiqo dakhli.",
+    "step3Title": "La wadaag xiriiriyahaaga",
+    "step3Body": "Hal xiriiriye oo ku yaal bio-ga TikTok waa dukaankaaga oo dhan.",
+    "step4Title": "Lacag hel",
+    "step4Body": "La soco dakhligaaga oo codso lacag-bixin goor kasta.",
+    "footerRights": "Dhammaan xuquuqda way xifdisan yihiin."
+  }
+}
