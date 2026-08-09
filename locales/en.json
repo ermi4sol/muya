@@ -206,6 +206,13 @@
     "delete": "Delete product",
     "back": "Back",
     "deleted": "Deleted",
-    "confirmDelete": "Delete this product? Customers who bought it keep their access."
+    "confirmDelete": "Delete this product? Customers who bought it keep their access.",
+    "videoHelpTitle": "📹 How to add your lesson video (step by step)",
+    "vh1": "Record your lesson video, then open the YouTube app (or youtube.com) and sign in. If you don't have a channel yet, YouTube will create one free when you upload.",
+    "vh2": "Tap the + (Create) button → Upload a video → choose your lesson video.",
+    "vh3": "On the Visibility step, choose UNLISTED — not Public, not Private. Unlisted means the video never appears in search or on your channel; only people with the link can watch it.",
+    "vh4": "Finish the upload, then open the video and tap Share → Copy link.",
+    "vh5": "Come back here and paste that link into the video box of the lesson. Done!",
+    "vhNote": "Important: never pick Private (your students wouldn't be able to watch), and don't delete the video from YouTube later — your course plays it from there."
   }
 }

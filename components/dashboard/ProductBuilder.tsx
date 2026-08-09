@@ -482,6 +482,24 @@ function CourseEditor({ modules, onChange }: { modules: Module[]; onChange: (m: 
   return (
     <div>
       <p className="text-sm font-medium text-ink-soft">{t("modules")}</p>
+
+      {/* How to upload your lesson video to YouTube */}
+      <details className="mt-2 rounded-control border border-accent-200 bg-accent-50 px-3.5 py-2.5">
+        <summary className="cursor-pointer text-sm font-semibold text-accent-900">
+          {t("videoHelpTitle")}
+        </summary>
+        <ol className="mt-2 list-decimal space-y-1.5 pl-5 text-sm text-accent-900/90">
+          <li>{t("vh1")}</li>
+          <li>{t("vh2")}</li>
+          <li>{t("vh3")}</li>
+          <li>{t("vh4")}</li>
+          <li>{t("vh5")}</li>
+        </ol>
+        <p className="mt-2 rounded-lg bg-surface px-3 py-2 text-xs font-medium text-danger">
+          {t("vhNote")}
+        </p>
+      </details>
+
       <div className="mt-2 space-y-3">
         {modules.map((m, mi) => (
           <div key={mi} className="rounded-control border border-line p-3">

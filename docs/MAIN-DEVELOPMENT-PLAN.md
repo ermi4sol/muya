@@ -143,6 +143,10 @@ The test suite from the technical spec — unit tests (commission/ledger math, e
 
 ---
 
+## Future enhancements (post-launch backlog)
+
+- **MUYA-hosted course video uploads** (decided 2026-08-09, deferred): creators currently upload lesson videos to their own YouTube as *Unlisted* and paste the link (the course builder includes a step-by-step guide for this). A direct "upload from the lesson editor" feature is possible later via either (a) the YouTube Data API on a MUYA-owned channel — requires a quota-increase application (default quota ≈ 6 uploads/day platform-wide), Google app verification for the upload scope, browser-direct resumable uploads, and accepts the single-channel copyright-strike risk — or (b) a dedicated video host (Bunny Stream / Mux / Cloudflare Stream) once there's budget, which removes all three constraints. Lesson **attachments** upload to MUYA storage ships in Phase 8 regardless.
+
 ## Working rhythm
 
 Each development phase ends with a working deploy pushed live, a short progress note saved to the project, and anything needed from the founder clearly flagged in chat. Phase 0 runs interactively in chat, step by step, resolving problems as they appear. If anything discovered mid-phase changes the plan, this document gets updated — no silent drift.

@@ -206,6 +206,13 @@
     "delete": "Oomisha haqi",
     "back": "Deebi'i",
     "deleted": "Haqameera",
-    "confirmDelete": "Oomisha kana haquu? Maamiltoonni bitan seensa isaanii qabatu."
+    "confirmDelete": "Oomisha kana haquu? Maamiltoonni bitan seensa isaanii qabatu.",
+    "videoHelpTitle": "📹 Viidiyoo barnootaa akkamitti dabaltu (tartiibaan)",
+    "vh1": "Viidiyoo barnootaa waraabi, ergasii appii YouTube (ykn youtube.com) banii seeni. Chaanaalii yoo hin qabaanne, YouTube yeroo fe'itu bilisaan siif uuma.",
+    "vh2": "Mallattoo + (Create) tuqi → Upload a video → viidiyoo barnootaa kee filadhu.",
+    "vh3": "Sadarkaa Visibility irratti UNLISTED filadhu — Public miti, Private miti. Unlisted jechuun viidiyoon barbaacha keessatti hin mul'atu; namoonni liinkii qaban qofa ilaaluu danda'u.",
+    "vh4": "Fe'insa xumuri, ergasii viidiyoo banii Share → Copy link tuqi.",
+    "vh5": "As deebi'iitii liinkii sana sanduuqa viidiyoo barnootaa keessa maxxansi. Xumurameera!",
+    "vhNote": "Barbaachisaa: Private gonkumaa hin filatin (barattoonni kee ilaaluu hin danda'an), viidiyoo booda YouTube irraa hin haqin — koorsiin kee achii taphachiisa."
   }
 }
