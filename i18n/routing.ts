@@ -15,4 +15,7 @@ export const routing = defineRouting({
   locales,
   defaultLocale: "en",
   localePrefix: "as-needed",
+  // Without this, the NEXT_LOCALE cookie redirects "/" back to the last
+  // non-English locale, making it impossible to switch back to English.
+  localeDetection: false,
 });
