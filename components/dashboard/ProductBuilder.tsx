@@ -7,7 +7,7 @@ import { ImageUpload } from "@/components/dashboard/ImageUpload";
 
 import { TYPE_META } from "@/lib/product-types";
 
-type Attr = { name: string; values: string[] };
+type Attr = { name: string; values: string[]; valuesText?: string };
 type Variant = {
   attribute_values: Record<string, string>;
   sku?: string;
@@ -585,9 +585,25 @@ function PhysicalEditor({
                 className={`${input} w-32`}
               />
               <input
-                placeholder={t("attrValues")} value={a.values.join(", ")}
+                placeholder={t("attrValues")}
+                value={a.valuesText ?? a.values.join(", ")}
                 onChange={(e) =>
-                  setAttrs(attrs.map((x, j) => (j === i ? { ...x, values: e.target.value.split(",").map((v) => v.trim()).filter(Boolean) } : x)))
+                  // Keep the raw text as typed (commas included); parse a
+                  // clean values list alongside it for the variant matrix.
+                  setAttrs(
+                    attrs.map((x, j) =>
+                      j === i
+                        ? {
+                            ...x,
+                            valuesText: e.target.value,
+                            values: e.target.value
+                              .split(",")
+                              .map((v) => v.trim())
+                              .filter(Boolean),
+                          }
+                        : x
+                    )
+                  )
                 }
                 className={`${input} min-w-0 flex-1`}
               />
