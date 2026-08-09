@@ -33,8 +33,8 @@ MUYA is a creator-commerce platform for Ethiopian creators — one storefront li
 | 2 | Database: 26-table schema, indexes, RLS lockdown, seed (see [docs/DATABASE-STRUCTURE.md](docs/DATABASE-STRUCTURE.md)) | ✅ Done — 2026-08-09 |
 | 3 | Authentication: magic links (creators/customers), admin password + TOTP MFA | ✅ Done — 2026-08-09 |
 | 4 | Landing page (full marketing site) | ✅ Done — 2026-08-09 |
-| 5 | Creator dashboard core + store editor | ⏳ Next |
-| 6 | Product builders (all ten types) | Planned |
+| 5 | Creator dashboard core + store editor | ✅ Done — 2026-08-09 |
+| 6 | Product builders (all ten types) | ⏳ Next |
 | 7 | Storefront + checkout (order-request model) | Planned |
 | 8 | Order approval + fulfillment engine + Calendar/Zoom integrations | Planned |
 | 9 | Community + realtime | Planned |
