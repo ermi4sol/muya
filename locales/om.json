@@ -149,7 +149,8 @@
     "connected": "Walqabateera",
     "disconnect": "Addaan kuti",
     "gcalWhy": "Bellamawwan leenjii taateewwan kaalendarii fi liinkota Google Meet ofumaan argatu.",
-    "zoomPlatform": "Weebinaaronni Zoom MUYA irratti ofumaan gaggeeffamu — qindaa'inni hin barbaachisu."
+    "zoomPlatform": "Weebinaaronni Zoom MUYA irratti ofumaan gaggeeffamu — qindaa'inni hin barbaachisu.",
+    "navIncome": "Galii"
   },
   "builder": {
     "chooseType": "Maal gurgurtaa jirta?",
@@ -295,5 +296,29 @@
     "remove": "Maxxansa balleessi",
     "restore": "Deebisi",
     "flagLabel": "Gabaafame"
+  },
+  "income": {
+    "title": "Galii",
+    "available": "Haftee jiru",
+    "held": "{amount} gaaffii kaffaltiitiin qabameera",
+    "pendingTitle": "Gaaffiiwwan kaffaltii adeemsa irra jiran",
+    "history": "Seenaa daldalaa",
+    "empty": "Ammatti daldalli hin jiru — gurgurtaan kee as mul'ata.",
+    "request": "Kaffaltii gaafadhu",
+    "requested": "Kaffaltiin gaafatameera — gareen MUYA hojjetee imeelii siif erga.",
+    "amount": "Hamma",
+    "bank": "Baankii",
+    "accountName": "Maqaa abbaa herregaa",
+    "accountNumber": "Lakkoofsa herregaa",
+    "phoneNumber": "Lakkoofsa bilbilaa Telebirr",
+    "bankName": "Maqaa baankii",
+    "submit": "Gaaffii galchi",
+    "note": "Kaffaltiiwwan garee MUYAtiin ilaalamanii harkaan ergamu.",
+    "insufficient": "Hammi kun haftee kee caala.",
+    "errGeneric": "Rakkoon uumameera — irra deebi'ii yaali.",
+    "type_sale": "Gurgurtaa",
+    "type_payout": "Kaffaltii",
+    "type_refund": "Deebii maallaqaa",
+    "type_adjustment": "Sirreeffama"
   }
 }

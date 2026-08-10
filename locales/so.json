@@ -149,7 +149,8 @@
     "connected": "Waa ku xiran",
     "disconnect": "Ka fur",
     "gcalWhy": "Ballamada tababarku waxay si otomaatig ah u helaan dhacdooyin kalandar iyo xiriiriyeyaal Google Meet.",
-    "zoomPlatform": "Webinaarradu waxay si otomaatig ah ugu socdaan Zoom-ka MUYA — wax dejin ah looma baahna."
+    "zoomPlatform": "Webinaarradu waxay si otomaatig ah ugu socdaan Zoom-ka MUYA — wax dejin ah looma baahna.",
+    "navIncome": "Dakhli"
   },
   "builder": {
     "chooseType": "Maxaad iibinaysaa?",
@@ -295,5 +296,29 @@
     "remove": "Saar qoraalka",
     "restore": "Soo celi",
     "flagLabel": "La soo sheegay"
+  },
+  "income": {
+    "title": "Dakhli",
+    "available": "Haraaga jira",
+    "held": "{amount} ayaa ku xannibban codsiyada lacag-bixinta",
+    "pendingTitle": "Codsiyada lacag-bixinta ee socda",
+    "history": "Taariikhda macaamilada",
+    "empty": "Weli macaamil ma jiro — iibkaagu halkan ayuu ka muuqan doonaa.",
+    "request": "Codso lacag-bixin",
+    "requested": "Lacag-bixin waa la codsaday — kooxda MUYA ayaa hawsha qabanaysa oo iimayl kuu soo diri doonta.",
+    "amount": "Qadarka",
+    "bank": "Bangi",
+    "accountName": "Magaca lahaanshaha akoonka",
+    "accountNumber": "Lambarka akoonka",
+    "phoneNumber": "Lambarka telefoonka Telebirr",
+    "bankName": "Magaca bangiga",
+    "submit": "Gudbi codsiga",
+    "note": "Lacag-bixinnada waxaa dib u eega oo gacanta ku dira kooxda MUYA.",
+    "insufficient": "Qadarku wuu ka badan yahay haraagaaga.",
+    "errGeneric": "Khalad ayaa dhacay — isku day mar kale.",
+    "type_sale": "Iib",
+    "type_payout": "Lacag-bixin",
+    "type_refund": "Lacag-celin",
+    "type_adjustment": "Hagaajin"
   }
 }

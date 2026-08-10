@@ -19,6 +19,7 @@ export default async function DashboardLayout({
     { href: "/dashboard", label: t("navHome"), icon: "🏠" },
     { href: "/dashboard/store", label: t("navStore"), icon: "🏪" },
     { href: "/dashboard/orders", label: t("navOrders"), icon: "📦" },
+    { href: "/dashboard/income", label: t("navIncome"), icon: "💰" },
     { href: "/dashboard/settings", label: t("navSettings"), icon: "⚙️" },
   ];
 

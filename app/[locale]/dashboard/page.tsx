@@ -69,9 +69,12 @@ export default async function DashboardHome() {
           >
             {t("viewStore")}
           </Link>
-          <span className="cursor-not-allowed rounded-control border border-line px-4 py-2.5 text-sm font-semibold text-ink-faint">
-            {t("requestPayout")} · {t("soon")}
-          </span>
+          <Link
+            href="/dashboard/income"
+            className="rounded-control border border-line px-4 py-2.5 text-sm font-semibold text-ink-soft hover:border-primary-600 hover:text-primary-700"
+          >
+            {t("requestPayout")}
+          </Link>
         </div>
       </div>
 

@@ -149,7 +149,8 @@
     "connected": "ተራኺቡ",
     "disconnect": "ፍለ",
     "gcalWhy": "ቆጸራታት ስልጠና ናይ ካላንደር ፍጻመታትን ሊንክታት Google Meet ን ባዕሎም ይረኽቡ።",
-    "zoomPlatform": "ዌቢናራት ኣብ Zoom ናይ MUYA ባዕሎም ይካየዱ — ምድላው ኣየድልን።"
+    "zoomPlatform": "ዌቢናራት ኣብ Zoom ናይ MUYA ባዕሎም ይካየዱ — ምድላው ኣየድልን።",
+    "navIncome": "ኣታዊ"
   },
   "builder": {
     "chooseType": "እንታይ ትሸጥ ኣለኻ?",
@@ -295,5 +296,29 @@
     "remove": "ጽሑፍ ኣልግስ",
     "restore": "መልስ",
     "flagLabel": "ተሓቢሩ"
+  },
+  "income": {
+    "title": "ኣታዊ",
+    "available": "ዘሎ ቀሪ",
+    "held": "{amount} ብሕቶታት ክፍሊት ተታሒዙ",
+    "pendingTitle": "ኣብ መስርሕ ዘለዉ ሕቶታት ክፍሊት",
+    "history": "ታሪኽ ንግዲ",
+    "empty": "ክሳብ ሕጂ ንግዲ የለን — መሸጣኻ ኣብዚ ክረአ እዩ።",
+    "request": "ክፍሊት ሕተት",
+    "requested": "ክፍሊት ተሓቲቱ — ጉጅለ MUYA ኣተግቢሩ ኢመይል ክሰደልካ እዩ።",
+    "amount": "መጠን",
+    "bank": "ባንክ",
+    "accountName": "ስም ወናኒ ሕሳብ",
+    "accountNumber": "ቁጽሪ ሕሳብ",
+    "phoneNumber": "ቁጽሪ ተሌፎን Telebirr",
+    "bankName": "ስም ባንክ",
+    "submit": "ሕቶ ኣእቱ",
+    "note": "ክፍሊታት ብጉጅለ MUYA ተገምጊሞም ብኢድ ይለኣኹ።",
+    "insufficient": "እቲ መጠን ካብ ዘሎካ ቀሪ ይበዝሕ።",
+    "errGeneric": "ጌጋ ተፈጢሩ — ደጊምካ ፈትን።",
+    "type_sale": "መሸጣ",
+    "type_payout": "ክፍሊት",
+    "type_refund": "ምምላስ",
+    "type_adjustment": "ምትዕርራይ"
   }
 }

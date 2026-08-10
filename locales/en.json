@@ -149,7 +149,8 @@
     "connected": "Connected",
     "disconnect": "Disconnect",
     "gcalWhy": "Coaching bookings get calendar events + Google Meet links automatically.",
-    "zoomPlatform": "Webinars run on MUYA's Zoom automatically — nothing to set up."
+    "zoomPlatform": "Webinars run on MUYA's Zoom automatically — nothing to set up.",
+    "navIncome": "Income"
   },
   "builder": {
     "chooseType": "What are you selling?",
@@ -295,5 +296,29 @@
     "remove": "Remove post",
     "restore": "Restore",
     "flagLabel": "Reported"
+  },
+  "income": {
+    "title": "Income",
+    "available": "Available balance",
+    "held": "{amount} held in payout requests",
+    "pendingTitle": "Payout requests in progress",
+    "history": "Transaction history",
+    "empty": "No transactions yet — your sales will appear here.",
+    "request": "Request payout",
+    "requested": "Payout requested — the MUYA team will process it and email you.",
+    "amount": "Amount",
+    "bank": "Bank",
+    "accountName": "Account holder name",
+    "accountNumber": "Account number",
+    "phoneNumber": "Telebirr phone number",
+    "bankName": "Bank name",
+    "submit": "Submit request",
+    "note": "Payouts are reviewed and sent manually by the MUYA team.",
+    "insufficient": "Amount is more than your available balance.",
+    "errGeneric": "Something went wrong — try again.",
+    "type_sale": "Sale",
+    "type_payout": "Payout",
+    "type_refund": "Refund",
+    "type_adjustment": "Adjustment"
   }
 }

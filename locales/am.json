@@ -149,7 +149,8 @@
     "connected": "ተገናኝቷል",
     "disconnect": "አላቅቅ",
     "gcalWhy": "የስልጠና ቀጠሮዎች የቀን መቁጠሪያ ክስተቶች እና የGoogle Meet ሊንኮች በራስ-ሰር ያገኛሉ።",
-    "zoomPlatform": "ዌቢናሮች በMUYA Zoom ላይ በራስ-ሰር ይካሄዳሉ — ምንም ማዋቀር አያስፈልግም።"
+    "zoomPlatform": "ዌቢናሮች በMUYA Zoom ላይ በራስ-ሰር ይካሄዳሉ — ምንም ማዋቀር አያስፈልግም።",
+    "navIncome": "ገቢ"
   },
   "builder": {
     "chooseType": "ምን እየሸጡ ነው?",
@@ -295,5 +296,29 @@
     "remove": "ልጥፍ አስወግድ",
     "restore": "መልስ",
     "flagLabel": "ተመልክቷል"
+  },
+  "income": {
+    "title": "ገቢ",
+    "available": "ያለ ቀሪ ሂሳብ",
+    "held": "{amount} በክፍያ ጥያቄዎች ተይዟል",
+    "pendingTitle": "በሂደት ላይ ያሉ የክፍያ ጥያቄዎች",
+    "history": "የግብይት ታሪክ",
+    "empty": "እስካሁን ግብይቶች የሉም — ሽያጮችዎ እዚህ ይታያሉ።",
+    "request": "ክፍያ ጠይቅ",
+    "requested": "ክፍያ ተጠይቋል — የMUYA ቡድን አስተናግዶ ኢሜይል ይልክልዎታል።",
+    "amount": "መጠን",
+    "bank": "ባንክ",
+    "accountName": "የሂሳብ ባለቤት ስም",
+    "accountNumber": "የሂሳብ ቁጥር",
+    "phoneNumber": "የቴሌብር ስልክ ቁጥር",
+    "bankName": "የባንክ ስም",
+    "submit": "ጥያቄ አስገባ",
+    "note": "ክፍያዎች በMUYA ቡድን ተገምግመው በእጅ ይላካሉ።",
+    "insufficient": "መጠኑ ካለዎት ቀሪ ሂሳብ በላይ ነው።",
+    "errGeneric": "የሆነ ችግር ተፈጥሯል — እንደገና ይሞክሩ።",
+    "type_sale": "ሽያጭ",
+    "type_payout": "ክፍያ",
+    "type_refund": "ተመላሽ",
+    "type_adjustment": "ማስተካከያ"
   }
 }
