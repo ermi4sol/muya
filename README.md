@@ -36,12 +36,12 @@ MUYA is a creator-commerce platform for Ethiopian creators — one storefront li
 | 5 | Creator dashboard core + store editor | ✅ Done — 2026-08-09 |
 | 6 | Product builders (all ten types) | ✅ Done — 2026-08-09 |
 | 7 | Storefront + checkout (order-request model) | ✅ Done — 2026-08-09 |
-| 8 | Order approval + fulfillment engine (Calendar/Zoom OAuth in 8b) | ✅ Done — 2026-08-10 |
-| 9 | Community + realtime (+ 8b: Google Calendar & Zoom integrations) | ⏳ Next |
-| 10 | Money: ledger, income tab, payouts | Planned |
-| 11 | Admin panel (full) | Planned |
-| 12 | Polish: full i18n, emails, analytics, security hardening | Planned |
-| 13 | Testing, go-live + Chapa/R2/tier hand-off guides | Planned |
+| 8+8b | Order approval + fulfillment + Google Calendar & Zoom automation | ✅ Done — 2026-08-10 |
+| 9 | Community: posts, likes, comments, moderation | ✅ Done — 2026-08-10 |
+| 10 | Money: income tab, payout requests, refunds | ✅ Done — 2026-08-10 |
+| 11 | Admin panel: metrics, creators, payouts, ledger+CSV, safety, lookup | ✅ Done — 2026-08-10 |
+| 12 | Analytics, background jobs, security hardening | ✅ Done — 2026-08-10 |
+| 13 | Hand-off guides: Chapa, R2, tier activation (see /docs) | ✅ Done — 2026-08-10 |
 
 Full plan: [docs/MAIN-DEVELOPMENT-PLAN.md](docs/MAIN-DEVELOPMENT-PLAN.md) · Setup guide: [docs/SETUP-AND-DEPLOYMENT-GUIDE.md](docs/SETUP-AND-DEPLOYMENT-GUIDE.md)
 
