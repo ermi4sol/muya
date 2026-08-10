@@ -144,7 +144,12 @@
     "trackingPlaceholder": "የመከታተያ ቁጥር (አማራጭ)",
     "markShipped": "እንደተላከ ምልክት አድርግ",
     "markDelivered": "እንደደረሰ ምልክት አድርግ",
-    "delivered": "ደርሷል"
+    "delivered": "ደርሷል",
+    "connect": "አገናኝ",
+    "connected": "ተገናኝቷል",
+    "disconnect": "አላቅቅ",
+    "gcalWhy": "የስልጠና ቀጠሮዎች የቀን መቁጠሪያ ክስተቶች እና የGoogle Meet ሊንኮች በራስ-ሰር ያገኛሉ።",
+    "zoomPlatform": "ዌቢናሮች በMUYA Zoom ላይ በራስ-ሰር ይካሄዳሉ — ምንም ማዋቀር አያስፈልግም።"
   },
   "builder": {
     "chooseType": "ምን እየሸጡ ነው?",

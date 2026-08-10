@@ -144,7 +144,12 @@
     "trackingPlaceholder": "ቁጽሪ ክትትል (ኣማራጺ)",
     "markShipped": "ከም ዝተላእከ ምልክት ግበር",
     "markDelivered": "ከም ዝበጽሐ ምልክት ግበር",
-    "delivered": "በጺሑ"
+    "delivered": "በጺሑ",
+    "connect": "ኣራኽብ",
+    "connected": "ተራኺቡ",
+    "disconnect": "ፍለ",
+    "gcalWhy": "ቆጸራታት ስልጠና ናይ ካላንደር ፍጻመታትን ሊንክታት Google Meet ን ባዕሎም ይረኽቡ።",
+    "zoomPlatform": "ዌቢናራት ኣብ Zoom ናይ MUYA ባዕሎም ይካየዱ — ምድላው ኣየድልን።"
   },
   "builder": {
     "chooseType": "እንታይ ትሸጥ ኣለኻ?",

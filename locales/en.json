@@ -144,7 +144,12 @@
     "trackingPlaceholder": "Tracking number (optional)",
     "markShipped": "Mark shipped",
     "markDelivered": "Mark delivered",
-    "delivered": "Delivered"
+    "delivered": "Delivered",
+    "connect": "Connect",
+    "connected": "Connected",
+    "disconnect": "Disconnect",
+    "gcalWhy": "Coaching bookings get calendar events + Google Meet links automatically.",
+    "zoomPlatform": "Webinars run on MUYA's Zoom automatically — nothing to set up."
   },
   "builder": {
     "chooseType": "What are you selling?",

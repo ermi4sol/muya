@@ -144,7 +144,12 @@
     "trackingPlaceholder": "Lakkoofsa hordoffii (filannoo)",
     "markShipped": "Akka ergametti mallatteessi",
     "markDelivered": "Akka qaqqabetti mallatteessi",
-    "delivered": "Qaqqabeera"
+    "delivered": "Qaqqabeera",
+    "connect": "Walqabsiisi",
+    "connected": "Walqabateera",
+    "disconnect": "Addaan kuti",
+    "gcalWhy": "Bellamawwan leenjii taateewwan kaalendarii fi liinkota Google Meet ofumaan argatu.",
+    "zoomPlatform": "Weebinaaronni Zoom MUYA irratti ofumaan gaggeeffamu — qindaa'inni hin barbaachisu."
   },
   "builder": {
     "chooseType": "Maal gurgurtaa jirta?",

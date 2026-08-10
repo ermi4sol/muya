@@ -1,5 +1,7 @@
 import { supabaseAdmin } from "@/lib/db/client";
 import { writeAuditLog } from "@/lib/db/identity";
+import { createCalendarEvent } from "@/lib/integrations/google";
+import { createZoomMeeting } from "@/lib/integrations/zoom";
 import {
   sendOrderApprovedEmail,
   sendOrderRejectedEmail,
@@ -224,30 +226,85 @@ export async function fulfillOrder(orderOrId: OrderFull | string): Promise<void>
     case "coaching_call": {
       const slot = order.metadata?.slot as string | undefined;
       if (slot && entitlementId) {
+        const duration = Number(config.duration_minutes ?? 60);
         const { data: existing } = await db
           .from("bookings")
-          .select("id")
+          .select("id, meeting_link")
           .eq("entitlement_id", entitlementId)
           .maybeSingle();
+
+        let meetLink: string | null = existing?.meeting_link ?? null;
         if (!existing) {
+          // Try to create a Google Calendar event with a Meet link
+          // (works when the creator has connected their calendar)
+          let eventId: string | null = null;
+          try {
+            const event = await createCalendarEvent(order.creator_id, {
+              summary: `${order.products.title} — MUYA booking`,
+              description: `Booked by ${order.customers.email} via MUYA.`,
+              startIso: slot,
+              durationMinutes: duration,
+              attendeeEmail: order.customers.email,
+            });
+            if (event) {
+              eventId = event.eventId;
+              meetLink = event.meetLink;
+            }
+          } catch (e) {
+            console.error("calendar create failed:", e);
+          }
           await db.from("bookings").insert({
             product_id: order.product_id,
             entitlement_id: entitlementId,
             scheduled_at: slot,
-            duration_minutes: Number(config.duration_minutes ?? 60),
+            duration_minutes: duration,
+            calendar_event_id: eventId,
+            meeting_link: meetLink,
           });
         }
+
         const when = new Date(slot).toLocaleString(locale === "am" ? "am-ET" : "en-GB", {
           dateStyle: "full", timeStyle: "short",
         });
-        customerExtra = `<p>🗓️ ${when}</p><p style="color:#8a9693;font-size:13px;">The meeting link will be shared by your coach before the session.</p>`;
-        creatorExtra = `<p>🗓️ New booking: <strong>${when}</strong> — add it to your calendar. (Automatic Google Calendar events arrive when you connect your calendar in Settings → Integrations.)</p>`;
+        customerExtra = meetLink
+          ? `<p>🗓️ ${when}</p><p>🎥 Join here: <a href="${meetLink}">${meetLink}</a></p>`
+          : `<p>🗓️ ${when}</p><p style="color:#8a9693;font-size:13px;">The meeting link will be shared by your coach before the session.</p>`;
+        creatorExtra = meetLink
+          ? `<p>🗓️ New booking: <strong>${when}</strong> — added to your Google Calendar with a Meet link (${meetLink}).</p>`
+          : `<p>🗓️ New booking: <strong>${when}</strong> — add it to your calendar. (Automatic Google Calendar events + Meet links arrive when you connect your calendar in Settings → Integrations.)</p>`;
       }
       break;
     }
 
     case "webinar": {
       if (entitlementId) {
+        // One Zoom meeting per webinar product, created on first registration
+        let joinUrl = (config.zoom_join_url as string) ?? null;
+        if (!joinUrl && config.starts_at) {
+          try {
+            const meeting = await createZoomMeeting({
+              topic: order.products.title,
+              startIso: new Date(config.starts_at as string).toISOString(),
+              durationMinutes: Number(config.duration_minutes ?? 60),
+            });
+            if (meeting) {
+              joinUrl = meeting.joinUrl;
+              await db
+                .from("products")
+                .update({
+                  config: {
+                    ...config,
+                    zoom_meeting_id: meeting.meetingId,
+                    zoom_join_url: meeting.joinUrl,
+                  },
+                })
+                .eq("id", order.product_id);
+            }
+          } catch (e) {
+            console.error("zoom create failed:", e);
+          }
+        }
+
         const { data: existing } = await db
           .from("webinar_registrants")
           .select("id")
@@ -257,7 +314,7 @@ export async function fulfillOrder(orderOrId: OrderFull | string): Promise<void>
           await db.from("webinar_registrants").insert({
             product_id: order.product_id,
             entitlement_id: entitlementId,
-            join_url: (config.join_url as string) ?? null,
+            join_url: joinUrl,
           });
         }
         const startsAt = config.starts_at
@@ -265,9 +322,12 @@ export async function fulfillOrder(orderOrId: OrderFull | string): Promise<void>
               dateStyle: "full", timeStyle: "short",
             })
           : null;
-        customerExtra = startsAt
-          ? `<p>🔴 Live on <strong>${startsAt}</strong>. Your join link will be emailed before the event.</p>`
-          : "";
+        customerExtra = [
+          startsAt ? `<p>🔴 Live on <strong>${startsAt}</strong>.</p>` : "",
+          joinUrl
+            ? `<p>🎥 Your join link: <a href="${joinUrl}">${joinUrl}</a></p>`
+            : `<p style="color:#8a9693;font-size:13px;">Your join link will be emailed before the event.</p>`,
+        ].join("");
       }
       break;
     }

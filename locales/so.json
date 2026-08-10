@@ -144,7 +144,12 @@
     "trackingPlaceholder": "Lambarka raadraaca (ikhtiyaari)",
     "markShipped": "Calaamadee inuu dhoofay",
     "markDelivered": "Calaamadee inuu gaadhay",
-    "delivered": "Waa la gaarsiiyay"
+    "delivered": "Waa la gaarsiiyay",
+    "connect": "Ku xir",
+    "connected": "Waa ku xiran",
+    "disconnect": "Ka fur",
+    "gcalWhy": "Ballamada tababarku waxay si otomaatig ah u helaan dhacdooyin kalandar iyo xiriiriyeyaal Google Meet.",
+    "zoomPlatform": "Webinaarradu waxay si otomaatig ah ugu socdaan Zoom-ka MUYA — wax dejin ah looma baahna."
   },
   "builder": {
     "chooseType": "Maxaad iibinaysaa?",
