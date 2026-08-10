@@ -279,6 +279,21 @@
     "openAccess": "Fur gelitaankaaga",
     "memberNote": "Xubinnimadaadu waa firfircoon tahay. Waxyaabaha xubnaha ayaa ku soo kordhi doona cusboonaysiinta soo socota.",
     "communityNote": "Waad ku jirtaa! Bogga bulshada ayaa furmi doona cusboonaysiinta soo socota — iimayl ayaad heli doontaa marka la daaro.",
-    "accessGeneric": "Gelitaankaaga waa la xaqiijiyay — iimaylkaaga ka eeg faahfaahinta."
+    "accessGeneric": "Gelitaankaaga waa la xaqiijiyay — iimaylkaaga ka eeg faahfaahinta.",
+    "openCommunity": "Fur bulshada"
+  },
+  "community": {
+    "placeholder": "Wax la wadaag bulshada…",
+    "post": "Daabac",
+    "empty": "Weli qoraallo ma jiraan — noqo kan ugu horreeya ee salaama! 👋",
+    "commentPlaceholder": "Qor faallo…",
+    "delete": "Tirtir",
+    "report": "Soo sheeg",
+    "reported": "Waa la soo sheegay ✓",
+    "members": "{n} xubnood",
+    "modSub": "Maamul qoraallada — kuwa la saaray qof walba way ka libdhaan.",
+    "remove": "Saar qoraalka",
+    "restore": "Soo celi",
+    "flagLabel": "La soo sheegay"
   }
 }

@@ -303,6 +303,14 @@ function ProductsTab({ initial }: { initial: ProductRow[] }) {
                   {Number(p.price).toLocaleString()} {p.currency}
                 </p>
               </Link>
+              {p.type === "community" && (
+                <Link
+                  href={`/dashboard/community/${p.id}`}
+                  className="rounded-full bg-accent-100 px-2.5 py-1 text-xs font-semibold text-accent-900"
+                >
+                  💬
+                </Link>
+              )}
               <button
                 onClick={() => toggle(p)}
                 className={`rounded-full px-2.5 py-1 text-xs font-semibold ${

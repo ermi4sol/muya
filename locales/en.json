@@ -279,6 +279,21 @@
     "openAccess": "Open your access",
     "memberNote": "Your membership is active. Member content and community access grow in the coming updates.",
     "communityNote": "You're in! The community feed opens in an upcoming update — you'll get an email when it's live.",
-    "accessGeneric": "Your access is confirmed — check your email for the details."
+    "accessGeneric": "Your access is confirmed — check your email for the details.",
+    "openCommunity": "Open the community"
+  },
+  "community": {
+    "placeholder": "Share something with the community…",
+    "post": "Post",
+    "empty": "No posts yet — be the first to say hello! 👋",
+    "commentPlaceholder": "Write a comment…",
+    "delete": "Delete",
+    "report": "Report",
+    "reported": "Reported ✓",
+    "members": "{n} members",
+    "modSub": "Manage posts — removed posts disappear for everyone.",
+    "remove": "Remove post",
+    "restore": "Restore",
+    "flagLabel": "Reported"
   }
 }

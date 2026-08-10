@@ -279,6 +279,21 @@
     "openAccess": "Seensa kee bani",
     "memberNote": "Miseensummaan kee hojii irra jira. Qabiyyeen miseensotaa fooyya'iinsa itti aanu keessatti dabalama.",
     "communityNote": "Galteetta! Fuulli hawaasaa fooyya'iinsa itti aanutti banama — yommuu eegalu imeelii argatta.",
-    "accessGeneric": "Seensi kee mirkanaa'eera — bal'inaaf imeelii kee ilaali."
+    "accessGeneric": "Seensi kee mirkanaa'eera — bal'inaaf imeelii kee ilaali.",
+    "openCommunity": "Hawaasa bani"
+  },
+  "community": {
+    "placeholder": "Waan tokko hawaasa waliin qoodi…",
+    "post": "Maxxansi",
+    "empty": "Ammatti maxxansi hin jiru — nagaa jechuuf kan jalqabaa ta'i! 👋",
+    "commentPlaceholder": "Yaada barreessi…",
+    "delete": "Haqi",
+    "report": "Gabaasi",
+    "reported": "Gabaafameera ✓",
+    "members": "Miseensota {n}",
+    "modSub": "Maxxansaalee bulchi — kan haqaman hunda biraa dhokatu.",
+    "remove": "Maxxansa balleessi",
+    "restore": "Deebisi",
+    "flagLabel": "Gabaafame"
   }
 }

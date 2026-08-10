@@ -70,9 +70,12 @@ export default async function AccessPage({
         )}
 
         {type === "community" && (
-          <p className="mt-4 rounded-control bg-primary-50 px-4 py-3 text-sm text-primary-800">
-            {t("communityNote")}
-          </p>
+          <Link
+            href={`/community/${order.id}`}
+            className="mt-5 inline-block rounded-control bg-primary-600 px-6 py-3.5 font-semibold text-white shadow-card hover:bg-primary-700"
+          >
+            💬 {t("openCommunity")}
+          </Link>
         )}
 
         {!["digital_download", "lead_magnet", "course", "membership", "community"].includes(type) && (
