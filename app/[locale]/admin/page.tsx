@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getAdminSession } from "@/lib/auth/session";
 import { supabaseAdmin } from "@/lib/db/client";
 import { OrdersQueue, type QueueOrder } from "@/components/admin/OrdersQueue";
+import { AdminNav } from "@/components/admin/AdminNav";
 
 export const dynamic = "force-dynamic";
 
@@ -58,21 +59,7 @@ export default async function AdminHomePage() {
 
   return (
     <div className="min-h-dvh bg-neutral-100">
-      <header className="flex items-center justify-between border-b border-neutral-200 bg-white px-5 py-3">
-        <span className="text-sm font-semibold text-neutral-900">
-          MUYA administration
-        </span>
-        <div className="flex items-center gap-3 text-sm text-neutral-500">
-          <span>
-            {session.email} · <span className="font-medium">{session.adminRole}</span>
-          </span>
-          <form action="/api/auth/logout?admin=1" method="post">
-            <button className="rounded-md border border-neutral-300 px-2.5 py-1 text-xs hover:bg-neutral-50">
-              Sign out
-            </button>
-          </form>
-        </div>
-      </header>
+      <AdminNav email={session.email} role={session.adminRole ?? ""} active="/admin" />
 
       <main className="mx-auto max-w-3xl px-4 py-8">
         <h1 className="text-xl font-semibold text-neutral-900">
