@@ -138,7 +138,13 @@
     "integrations": "ውህደታት",
     "intgSoon": "Google Calendar ን Zoom ን ስልጠናን ዌቢናርን ምስ ጀመሩ ኣብዚ ይራኸቡ።",
     "signOut": "ውጻእ",
-    "errGeneric": "ጌጋ ተፈጢሩ — ደጊምካ ፈትን።"
+    "errGeneric": "ጌጋ ተፈጢሩ — ደጊምካ ፈትን።",
+    "navOrders": "ትእዛዛት",
+    "ordersTitle": "ትእዛዛትካ",
+    "trackingPlaceholder": "ቁጽሪ ክትትል (ኣማራጺ)",
+    "markShipped": "ከም ዝተላእከ ምልክት ግበር",
+    "markDelivered": "ከም ዝበጽሐ ምልክት ግበር",
+    "delivered": "በጺሑ"
   },
   "builder": {
     "chooseType": "እንታይ ትሸጥ ኣለኻ?",
@@ -261,6 +267,13 @@
     "turnaround": "ኣብ {n} መዓልታት ይበጽሕ",
     "yourAnswer": "ሕቶኻ",
     "included": "እንታይ ተሓዊሱ",
-    "errGeneric": "ጌጋ ተፈጢሩ — በጃኻ ደጊምካ ፈትን።"
+    "errGeneric": "ጌጋ ተፈጢሩ — በጃኻ ደጊምካ ፈትን።",
+    "download": "ፋይልካ ኣውርድ",
+    "downloadNote": "እቲ ሊንክ ናይ ግዢኻ ውልቃዊ እዩ — ኣብ ዝኾነ እዋን ተመሊስካ ክትጥቀመሉ ትኽእል።",
+    "openCourse": "ኮርስ ክፈት",
+    "openAccess": "መእተዊኻ ክፈት",
+    "memberNote": "ኣባልነትካ ንጡፍ እዩ። ናይ ኣባላት ትሕዝቶ ኣብ ዝመጽእ ምሕዳሳት ይውስኽ።",
+    "communityNote": "ኣቲኻ ኣለኻ! ገጽ ማሕበረሰብ ኣብ ዝመጽእ ምሕዳስ ይኽፈት — ምስ ጀመረ ኢመይል ክመጸካ እዩ።",
+    "accessGeneric": "መእተዊኻ ተረጋጊጹ — ንዝርዝር ኢመይልካ ርአ።"
   }
 }

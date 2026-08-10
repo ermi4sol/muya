@@ -26,6 +26,8 @@ export function OrderStatusLive({
           if (body.status && body.status !== "pending") {
             setStatus(body.status);
             setReason(body.reason ?? null);
+            // Reload so the server page can render the access button
+            setTimeout(() => window.location.reload(), 1200);
           }
         }
       } catch {

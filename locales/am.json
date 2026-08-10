@@ -138,7 +138,13 @@
     "integrations": "ውህደቶች",
     "intgSoon": "Google Calendar እና Zoom የስልጠና ጥሪዎች እና ዌቢናሮች ሲጀምሩ እዚህ ይገናኛሉ።",
     "signOut": "ውጣ",
-    "errGeneric": "የሆነ ችግር ተፈጥሯል — እንደገና ይሞክሩ።"
+    "errGeneric": "የሆነ ችግር ተፈጥሯል — እንደገና ይሞክሩ።",
+    "navOrders": "ትዕዛዞች",
+    "ordersTitle": "ትዕዛዞችዎ",
+    "trackingPlaceholder": "የመከታተያ ቁጥር (አማራጭ)",
+    "markShipped": "እንደተላከ ምልክት አድርግ",
+    "markDelivered": "እንደደረሰ ምልክት አድርግ",
+    "delivered": "ደርሷል"
   },
   "builder": {
     "chooseType": "ምን እየሸጡ ነው?",
@@ -261,6 +267,13 @@
     "turnaround": "በ{n} ቀናት ውስጥ ይደርሳል",
     "yourAnswer": "ጥያቄዎ",
     "included": "ምን ተካትቷል",
-    "errGeneric": "የሆነ ችግር ተፈጥሯል — እባክዎ እንደገና ይሞክሩ።"
+    "errGeneric": "የሆነ ችግር ተፈጥሯል — እባክዎ እንደገና ይሞክሩ።",
+    "download": "ፋይልዎን ያውርዱ",
+    "downloadNote": "ሊንኩ የግዢዎ የግል ነው — በማንኛውም ጊዜ ተመልሰው መጠቀም ይችላሉ።",
+    "openCourse": "ኮርሱን ክፈት",
+    "openAccess": "መዳረሻዎን ክፈት",
+    "memberNote": "አባልነትዎ ንቁ ነው። የአባላት ይዘት እና የማህበረሰብ መዳረሻ በሚቀጥሉት ዝመናዎች ያድጋሉ።",
+    "communityNote": "ገብተዋል! የማህበረሰቡ ገጽ በሚቀጥለው ዝመና ይከፈታል — ሲጀምር ኢሜይል ይደርስዎታል።",
+    "accessGeneric": "መዳረሻዎ ተረጋግጧል — ለዝርዝሮች ኢሜይልዎን ይመልከቱ።"
   }
 }

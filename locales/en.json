@@ -138,7 +138,13 @@
     "integrations": "Integrations",
     "intgSoon": "Google Calendar and Zoom connect here when coaching calls and webinars go live.",
     "signOut": "Sign out",
-    "errGeneric": "Something went wrong — try again."
+    "errGeneric": "Something went wrong — try again.",
+    "navOrders": "Orders",
+    "ordersTitle": "Your orders",
+    "trackingPlaceholder": "Tracking number (optional)",
+    "markShipped": "Mark shipped",
+    "markDelivered": "Mark delivered",
+    "delivered": "Delivered"
   },
   "builder": {
     "chooseType": "What are you selling?",
@@ -261,6 +267,13 @@
     "turnaround": "Delivered within {n} days",
     "yourAnswer": "Your request",
     "included": "What's included",
-    "errGeneric": "Something went wrong — please try again."
+    "errGeneric": "Something went wrong — please try again.",
+    "download": "Download your file",
+    "downloadNote": "The link is personal to your purchase — it works any time you come back here.",
+    "openCourse": "Open the course",
+    "openAccess": "Open your access",
+    "memberNote": "Your membership is active. Member content and community access grow in the coming updates.",
+    "communityNote": "You're in! The community feed opens in an upcoming update — you'll get an email when it's live.",
+    "accessGeneric": "Your access is confirmed — check your email for the details."
   }
 }

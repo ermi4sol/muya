@@ -138,7 +138,13 @@
     "integrations": "Isku-xirka",
     "intgSoon": "Google Calendar iyo Zoom halkan ayay ku xirmi doonaan marka wicitaannada tababarku iyo webinaarradu bilaabmaan.",
     "signOut": "Ka bax",
-    "errGeneric": "Khalad ayaa dhacay — isku day mar kale."
+    "errGeneric": "Khalad ayaa dhacay — isku day mar kale.",
+    "navOrders": "Dalabyada",
+    "ordersTitle": "Dalabyadaada",
+    "trackingPlaceholder": "Lambarka raadraaca (ikhtiyaari)",
+    "markShipped": "Calaamadee inuu dhoofay",
+    "markDelivered": "Calaamadee inuu gaadhay",
+    "delivered": "Waa la gaarsiiyay"
   },
   "builder": {
     "chooseType": "Maxaad iibinaysaa?",
@@ -261,6 +267,13 @@
     "turnaround": "Waxaa la keenayaa {n} maalmood gudahood",
     "yourAnswer": "Codsigaaga",
     "included": "Waxa ku jira",
-    "errGeneric": "Khalad ayaa dhacay — fadlan isku day mar kale."
+    "errGeneric": "Khalad ayaa dhacay — fadlan isku day mar kale.",
+    "download": "Soo deji faylkaaga",
+    "downloadNote": "Xiriiriyuhu waa mid gaar ah oo iibkaaga — waad isticmaali kartaa mar kasta oo aad halkan ku soo noqoto.",
+    "openCourse": "Fur koorsada",
+    "openAccess": "Fur gelitaankaaga",
+    "memberNote": "Xubinnimadaadu waa firfircoon tahay. Waxyaabaha xubnaha ayaa ku soo kordhi doona cusboonaysiinta soo socota.",
+    "communityNote": "Waad ku jirtaa! Bogga bulshada ayaa furmi doona cusboonaysiinta soo socota — iimayl ayaad heli doontaa marka la daaro.",
+    "accessGeneric": "Gelitaankaaga waa la xaqiijiyay — iimaylkaaga ka eeg faahfaahinta."
   }
 }

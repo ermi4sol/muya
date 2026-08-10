@@ -7,6 +7,7 @@ import {
   sendOrderReceivedEmail,
   sendAdminNewOrderAlert,
 } from "@/lib/email/orders";
+import { approveOrder } from "@/lib/fulfillment";
 
 const Body = z.object({
   productId: z.string().uuid(),
@@ -124,8 +125,7 @@ async function handle(req: Request) {
       shipping_fee: shippingFee,
       total_charged: total,
       currency: product.currency,
-      payment_status: isFree ? "paid" : "pending",
-      ...(isFree ? { approved_at: new Date().toISOString() } : {}),
+      payment_status: "pending",
       metadata: {
         locale: b.locale ?? "en",
         ...(variantSummary ? { variant: variantSummary } : {}),
@@ -152,37 +152,32 @@ async function handle(req: Request) {
     });
   }
 
-  // Free products: grant access instantly (full fulfillment engine = Phase 8)
-  if (isFree) {
-    await db.from("entitlements").insert({
-      customer_id: customer.id,
-      product_id: product.id,
-      order_id: order.id,
-    });
-  }
-
   const totalLabel = `${total.toLocaleString()} ${product.currency}`;
-  // Fire both emails; a failure never blocks the order
-  await Promise.allSettled([
-    sendOrderReceivedEmail({
-      to: b.email,
-      orderId: order.id,
-      productTitle: product.title,
-      total: totalLabel,
-      locale: b.locale,
-    }),
-    isFree
-      ? Promise.resolve()
-      : sendAdminNewOrderAlert({
-          orderId: order.id,
-          productTitle: product.title,
-          productType: product.type,
-          creatorName: creator?.display_name ?? creator?.store_slug ?? "—",
-          customerEmail: b.email,
-          total: totalLabel,
-          details: variantSummary ? `Variant: ${variantSummary} × ${b.quantity}` : undefined,
-        }),
-  ]);
+
+  if (isFree) {
+    // Free products skip the admin queue: auto-approve + fulfill instantly
+    await approveOrder(order.id, null);
+  } else {
+    // Paid orders: notify customer + admin; a failure never blocks the order
+    await Promise.allSettled([
+      sendOrderReceivedEmail({
+        to: b.email,
+        orderId: order.id,
+        productTitle: product.title,
+        total: totalLabel,
+        locale: b.locale,
+      }),
+      sendAdminNewOrderAlert({
+        orderId: order.id,
+        productTitle: product.title,
+        productType: product.type,
+        creatorName: creator?.display_name ?? creator?.store_slug ?? "—",
+        customerEmail: b.email,
+        total: totalLabel,
+        details: variantSummary ? `Variant: ${variantSummary} × ${b.quantity}` : undefined,
+      }),
+    ]);
+  }
 
   return NextResponse.json({ orderId: order.id, free: isFree });
 }

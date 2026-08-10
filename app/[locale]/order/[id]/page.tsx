@@ -14,14 +14,25 @@ export default async function OrderStatusPage({
   const { data: order } = await supabaseAdmin()
     .from("orders")
     .select(
-      "id, quantity, item_amount, shipping_fee, total_charged, currency, payment_status, rejection_reason, metadata, products(title), creators(display_name, store_slug)"
+      "id, quantity, item_amount, shipping_fee, total_charged, currency, payment_status, rejection_reason, metadata, products(title, type), creators(display_name, store_slug)"
     )
     .eq("id", id)
     .maybeSingle();
   if (!order) notFound();
 
   const t = await getTranslations("shop");
-  const product = order.products as unknown as { title: string } | null;
+  const product = order.products as unknown as {
+    title: string;
+    type: string;
+  } | null;
+  const accessPath =
+    order.payment_status === "paid" && product
+      ? product.type === "course"
+        ? `/learn/${order.id}`
+        : ["digital_download", "lead_magnet", "membership", "community"].includes(product.type)
+          ? `/access/${order.id}`
+          : null
+      : null;
   const creator = order.creators as unknown as {
     display_name: string | null;
     store_slug: string;
@@ -36,6 +47,14 @@ export default async function OrderStatusPage({
           initialStatus={order.payment_status}
           initialReason={order.rejection_reason}
         />
+        {accessPath && (
+          <a
+            href={accessPath}
+            className="mt-4 inline-block rounded-control bg-primary-600 px-6 py-3.5 font-semibold text-white shadow-card hover:bg-primary-700"
+          >
+            {product?.type === "course" ? `🎓 ${t("openCourse")}` : `🔓 ${t("openAccess")}`}
+          </a>
+        )}
         <div className="mt-5 rounded-control bg-bg p-4 text-left text-sm text-ink-soft">
           <p className="font-semibold text-ink">{product?.title ?? "—"}</p>
           {Boolean(meta.variant) && (
