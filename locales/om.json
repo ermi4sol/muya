@@ -150,7 +150,8 @@
     "disconnect": "Addaan kuti",
     "gcalWhy": "Bellamawwan leenjii taateewwan kaalendarii fi liinkota Google Meet ofumaan argatu.",
     "zoomPlatform": "Weebinaaronni Zoom MUYA irratti ofumaan gaggeeffamu — qindaa'inni hin barbaachisu.",
-    "navIncome": "Galii"
+    "navIncome": "Galii",
+    "analytics": "Xiinxala"
   },
   "builder": {
     "chooseType": "Maal gurgurtaa jirta?",
@@ -320,5 +321,14 @@
     "type_payout": "Kaffaltii",
     "type_refund": "Deebii maallaqaa",
     "type_adjustment": "Sirreeffama"
+  },
+  "analytics": {
+    "title": "Xiinxala",
+    "subtitle": "Guyyoota 30 darban",
+    "visitors": "Daawwattoota suuqii",
+    "orders": "Ajajawwan (kaffalame / hunda)",
+    "leads": "Imeelota walitti qabaman",
+    "conversion": "Daawwannaa → hamma ajajaa",
+    "note": "Lakkaa'uun daawwattootaa fooyya'iinsa kanaan eegale — lakkoofsi har'aa kaasee guddata."
   }
 }

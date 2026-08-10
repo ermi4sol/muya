@@ -150,7 +150,8 @@
     "disconnect": "Ka fur",
     "gcalWhy": "Ballamada tababarku waxay si otomaatig ah u helaan dhacdooyin kalandar iyo xiriiriyeyaal Google Meet.",
     "zoomPlatform": "Webinaarradu waxay si otomaatig ah ugu socdaan Zoom-ka MUYA — wax dejin ah looma baahna.",
-    "navIncome": "Dakhli"
+    "navIncome": "Dakhli",
+    "analytics": "Falanqayn"
   },
   "builder": {
     "chooseType": "Maxaad iibinaysaa?",
@@ -320,5 +321,14 @@
     "type_payout": "Lacag-bixin",
     "type_refund": "Lacag-celin",
     "type_adjustment": "Hagaajin"
+  },
+  "analytics": {
+    "title": "Falanqayn",
+    "subtitle": "30-kii maalmood ee la soo dhaafay",
+    "visitors": "Booqdayaasha dukaanka",
+    "orders": "Dalabyo (la bixiyay / dhammaan)",
+    "leads": "Iimaylada la ururiyay",
+    "conversion": "Booqasho → heerka dalabka",
+    "note": "Tirinta booqdayaashu waxay ka bilaabatay cusboonaysiintan — tirooyinku maanta ayay ka korayaan."
   }
 }

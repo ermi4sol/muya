@@ -5,6 +5,7 @@ import { themeOf } from "@/lib/themes";
 import { Link } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { VisitBeacon } from "@/components/storefront/VisitBeacon";
 
 export const revalidate = 60;
 
@@ -43,6 +44,7 @@ export default async function StorefrontPage({
 
   return (
     <div className="min-h-dvh" style={{ background: th.bg }}>
+      <VisitBeacon slug={slug} />
       <div className="mx-auto max-w-md px-4 py-8">
         <div className="flex justify-end">
           <LanguageSwitcher />

@@ -150,7 +150,8 @@
     "disconnect": "አላቅቅ",
     "gcalWhy": "የስልጠና ቀጠሮዎች የቀን መቁጠሪያ ክስተቶች እና የGoogle Meet ሊንኮች በራስ-ሰር ያገኛሉ።",
     "zoomPlatform": "ዌቢናሮች በMUYA Zoom ላይ በራስ-ሰር ይካሄዳሉ — ምንም ማዋቀር አያስፈልግም።",
-    "navIncome": "ገቢ"
+    "navIncome": "ገቢ",
+    "analytics": "ትንታኔ"
   },
   "builder": {
     "chooseType": "ምን እየሸጡ ነው?",
@@ -320,5 +321,14 @@
     "type_payout": "ክፍያ",
     "type_refund": "ተመላሽ",
     "type_adjustment": "ማስተካከያ"
+  },
+  "analytics": {
+    "title": "ትንታኔ",
+    "subtitle": "ያለፉት 30 ቀናት",
+    "visitors": "የመደብር ጎብኚዎች",
+    "orders": "ትዕዛዞች (የተከፈለ / ሁሉም)",
+    "leads": "የተሰበሰቡ ኢሜይሎች",
+    "conversion": "ጉብኝት → ትዕዛዝ መጠን",
+    "note": "የጎብኚ ቆጠራ በዚህ ዝመና ተጀምሯል — ቁጥሮች ከዛሬ ጀምሮ ያድጋሉ።"
   }
 }

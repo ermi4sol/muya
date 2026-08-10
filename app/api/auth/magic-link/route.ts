@@ -17,12 +17,8 @@ export async function POST(req: Request) {
   try {
     return await handle(req);
   } catch (e) {
-    const message = e instanceof Error ? e.message : String(e);
-    console.error("magic-link failed:", message);
-    return NextResponse.json(
-      { error: "server_error", detail: message },
-      { status: 500 }
-    );
+    console.error("magic-link failed:", e instanceof Error ? e.message : e);
+    return NextResponse.json({ error: "server_error" }, { status: 500 });
   }
 }
 

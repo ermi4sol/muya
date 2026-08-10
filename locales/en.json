@@ -150,7 +150,8 @@
     "disconnect": "Disconnect",
     "gcalWhy": "Coaching bookings get calendar events + Google Meet links automatically.",
     "zoomPlatform": "Webinars run on MUYA's Zoom automatically — nothing to set up.",
-    "navIncome": "Income"
+    "navIncome": "Income",
+    "analytics": "Analytics"
   },
   "builder": {
     "chooseType": "What are you selling?",
@@ -320,5 +321,14 @@
     "type_payout": "Payout",
     "type_refund": "Refund",
     "type_adjustment": "Adjustment"
+  },
+  "analytics": {
+    "title": "Analytics",
+    "subtitle": "Last 30 days",
+    "visitors": "Store visitors",
+    "orders": "Orders (paid / all)",
+    "leads": "Leads collected",
+    "conversion": "Visit → order rate",
+    "note": "Visitor counting started with this update — numbers grow from today."
   }
 }

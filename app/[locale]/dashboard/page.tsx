@@ -75,6 +75,12 @@ export default async function DashboardHome() {
           >
             {t("requestPayout")}
           </Link>
+          <Link
+            href="/dashboard/analytics"
+            className="rounded-control border border-line px-4 py-2.5 text-sm font-semibold text-ink-soft hover:border-primary-600 hover:text-primary-700"
+          >
+            📊 {t("analytics")}
+          </Link>
         </div>
       </div>
 

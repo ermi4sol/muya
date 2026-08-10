@@ -109,7 +109,19 @@ export async function approveOrder(
     });
   }
 
-  await fulfillOrder(order);
+  try {
+    await fulfillOrder(order);
+  } catch (e) {
+    // Never lose a paid order: park it for the retry sweep
+    console.error("fulfillment failed:", e instanceof Error ? e.message : e);
+    await db.from("failed_jobs").insert({
+      job_type: "fulfill_order",
+      payload: { orderId },
+      error: e instanceof Error ? e.message : String(e),
+      attempts: 1,
+      next_retry_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+    });
+  }
   return { ok: true };
 }
 

@@ -150,7 +150,8 @@
     "disconnect": "ፍለ",
     "gcalWhy": "ቆጸራታት ስልጠና ናይ ካላንደር ፍጻመታትን ሊንክታት Google Meet ን ባዕሎም ይረኽቡ።",
     "zoomPlatform": "ዌቢናራት ኣብ Zoom ናይ MUYA ባዕሎም ይካየዱ — ምድላው ኣየድልን።",
-    "navIncome": "ኣታዊ"
+    "navIncome": "ኣታዊ",
+    "analytics": "ትንተና"
   },
   "builder": {
     "chooseType": "እንታይ ትሸጥ ኣለኻ?",
@@ -320,5 +321,14 @@
     "type_payout": "ክፍሊት",
     "type_refund": "ምምላስ",
     "type_adjustment": "ምትዕርራይ"
+  },
+  "analytics": {
+    "title": "ትንተና",
+    "subtitle": "ዝሓለፉ 30 መዓልታት",
+    "visitors": "በጻሕቲ ድኳን",
+    "orders": "ትእዛዛት (ዝተኸፍለ / ኩሉ)",
+    "leads": "ዝተኣከቡ ኢመይላት",
+    "conversion": "ምብጻሕ → መጠን ትእዛዝ",
+    "note": "ቆጽሪ በጻሕቲ በዚ ምሕዳስ ጀሚሩ — ቁጽርታት ካብ ሎሚ ጀሚሮም ይውስኹ።"
   }
 }
