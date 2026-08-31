@@ -1,6 +1,16 @@
-import { SignJWT, jwtVerify } from "jose";
-import { cookies } from "next/headers";
-import { env } from "@/lib/env";
+/**
+ * v2 session layer — same interface as v1 (getUserSession / getAdminSession /
+ * requireAdminRole) so existing pages keep working, now backed by Better Auth.
+ *
+ * Identity model:
+ * - Creators + customers sign in with Telegram (Better Auth user has telegramId).
+ * - The single admin signs in with email + password + TOTP (no telegramId).
+ * - Session.sub stays the DOMAIN id (creators.id / customers.id / admin_users.id),
+ *   exactly like v1, so all existing queries keep working.
+ */
+import { headers } from "next/headers";
+import { auth } from "./auth";
+import { supabaseAdmin } from "@/lib/db/client";
 
 export type SessionRole = "creator" | "customer" | "admin";
 export type AdminRole = "superadmin" | "finance" | "support" | "trust_safety";
@@ -10,78 +20,86 @@ export interface Session {
   role: SessionRole;
   email: string;
   adminRole?: AdminRole;
+  /** Telegram numeric user id as string (creators/customers only). */
+  telegramId?: string;
+  /** customers.id for this person, when one exists (creators can buy too). */
+  customerId?: string;
 }
 
-const USER_COOKIE = "muya_session";
-const ADMIN_COOKIE = "muya_admin";
-const USER_MAX_AGE = 60 * 60 * 24 * 60; // 60 days
-const ADMIN_MAX_AGE = 60 * 60 * 12; // 12 hours
+type BetterAuthUser = {
+  id: string;
+  email: string;
+  telegramId?: string | null;
+  telegramUsername?: string | null;
+};
 
-function secret(): Uint8Array {
-  return new TextEncoder().encode(env.sessionSecret());
-}
-
-export async function signSession(session: Session): Promise<string> {
-  const maxAge = session.role === "admin" ? ADMIN_MAX_AGE : USER_MAX_AGE;
-  return new SignJWT({
-    role: session.role,
-    email: session.email,
-    ...(session.adminRole ? { adminRole: session.adminRole } : {}),
-  })
-    .setProtectedHeader({ alg: "HS256" })
-    .setSubject(session.sub)
-    .setIssuedAt()
-    .setExpirationTime(Math.floor(Date.now() / 1000) + maxAge)
-    .sign(secret());
-}
-
-export async function verifySessionToken(
-  token: string
-): Promise<Session | null> {
+async function getBetterAuthSession() {
   try {
-    const { payload } = await jwtVerify(token, secret());
-    if (!payload.sub || !payload.role) return null;
-    return {
-      sub: payload.sub,
-      role: payload.role as SessionRole,
-      email: (payload.email as string) ?? "",
-      adminRole: payload.adminRole as AdminRole | undefined,
-    };
+    return await auth.api.getSession({ headers: await headers() });
   } catch {
     return null;
   }
 }
 
-export function cookieName(role: SessionRole): string {
-  return role === "admin" ? ADMIN_COOKIE : USER_COOKIE;
-}
-
-export function sessionCookieOptions(role: SessionRole) {
-  return {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax" as const,
-    path: "/",
-    maxAge: role === "admin" ? ADMIN_MAX_AGE : USER_MAX_AGE,
-  };
-}
-
-/** Read the current creator/customer session from cookies (server-side). */
+/** Read the current creator/customer session (server-side). */
 export async function getUserSession(): Promise<Session | null> {
-  const store = await cookies();
-  const token = store.get(USER_COOKIE)?.value;
-  if (!token) return null;
-  const s = await verifySessionToken(token);
-  return s && (s.role === "creator" || s.role === "customer") ? s : null;
+  const s = await getBetterAuthSession();
+  if (!s) return null;
+  const user = s.user as unknown as BetterAuthUser;
+  const telegramId = user.telegramId ?? undefined;
+  if (!telegramId) return null; // an admin (or unknown) session is not a user session
+
+  const db = supabaseAdmin();
+  const [{ data: creator }, { data: customer }] = await Promise.all([
+    db
+      .from("creators")
+      .select("id, status")
+      .eq("telegram_user_id", telegramId)
+      .maybeSingle(),
+    db.from("customers").select("id").eq("telegram_user_id", telegramId).maybeSingle(),
+  ]);
+
+  if (creator && creator.status !== "suspended") {
+    return {
+      sub: creator.id,
+      role: "creator",
+      email: user.email,
+      telegramId,
+      customerId: customer?.id,
+    };
+  }
+  if (customer) {
+    return {
+      sub: customer.id,
+      role: "customer",
+      email: user.email,
+      telegramId,
+      customerId: customer.id,
+    };
+  }
+  return null;
 }
 
-/** Read the current admin session from cookies (server-side). */
+/** Read the current admin session (server-side). */
 export async function getAdminSession(): Promise<Session | null> {
-  const store = await cookies();
-  const token = store.get(ADMIN_COOKIE)?.value;
-  if (!token) return null;
-  const s = await verifySessionToken(token);
-  return s && s.role === "admin" ? s : null;
+  const s = await getBetterAuthSession();
+  if (!s) return null;
+  const user = s.user as unknown as BetterAuthUser;
+  if (user.telegramId) return null; // Telegram users are never admins
+
+  const { data: adminRow } = await supabaseAdmin()
+    .from("admin_users")
+    .select("id, role, email")
+    .eq("email", user.email)
+    .maybeSingle();
+  if (!adminRow) return null;
+
+  return {
+    sub: adminRow.id,
+    role: "admin",
+    email: adminRow.email,
+    adminRole: adminRow.role as AdminRole,
+  };
 }
 
 export function requireAdminRole(

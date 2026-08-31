@@ -42,7 +42,11 @@
     "errInvalid": "Xiriiriyahani waa khalad ama wuu dhacay — codso mid cusub.",
     "errRate": "Isku dayo aad u badan — fadlan mar dambe isku day.",
     "errSuspended": "Akoonkan waa la joojiyay. La xiriir taageerada.",
-    "errGeneric": "Khalad ayaa dhacay — fadlan isku day mar kale."
+    "errGeneric": "Khalad ayaa dhacay — fadlan isku day mar kale.",
+    "telegramSigninBody": "Ku gal akoonkaaga Telegram — furaha sir ah ma jiro, iimayl ma jiro.",
+    "telegramSignupBody": "Dukaankaaga ku fur akoonkaaga Telegram. Alaabtaada, dalabaadkaaga iyo lacag-bixintaadu waxay kuugu yimaadaan Telegram.",
+    "telegramSigning": "Waanu ku gelinaynaa…",
+    "telegramHint": "Iibsiga iyo wararku waxay kuugu yimaadaan bootkayaga @MuyaOfficialBot."
   },
   "dashboard": {
     "welcome": "Soo dhawoow",

@@ -42,7 +42,11 @@
     "errInvalid": "Liinkiin kun sirrii miti yookiin yeroon isaa darbeera — haaraa gaafadhu.",
     "errRate": "Yaalii baay'ee — turtee irra deebi'ii yaali.",
     "errSuspended": "Herregni kun dhorkameera. Deeggarsa qunnami.",
-    "errGeneric": "Rakkoon uumameera — irra deebi'ii yaali."
+    "errGeneric": "Rakkoon uumameera — irra deebi'ii yaali.",
+    "telegramSigninBody": "Akkaawuntii Telegram keessaniin seenaa — jecha darbii hin barbaachisu, imeelii hin barbaachisu.",
+    "telegramSignupBody": "Akkaawuntii Telegram keessaniin duka'ana keessan banadhaa. Oomishaaleen, ajajniifi kaffaltiin hundi Telegram irratti isin qaqqaba.",
+    "telegramSigning": "Seensisaa jirra…",
+    "telegramHint": "Bittaafi odeeffannoon bootii keenya @MuyaOfficialBot tiin ni ergamu."
   },
   "dashboard": {
     "welcome": "Baga nagaan dhufte",

@@ -1,77 +1,83 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import QRCode from "qrcode";
+import { authClient } from "@/lib/auth/client";
+
+type Step = "credentials" | "mfa" | "enroll" | "enroll-verify";
 
 export default function AdminLoginPage() {
-  const router = useRouter();
-  const [step, setStep] = useState<"credentials" | "mfa">("credentials");
+  const [step, setStep] = useState<Step>("credentials");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
-  const [stageToken, setStageToken] = useState("");
+  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
+  const [totpUri, setTotpUri] = useState<string | null>(null);
+  const [backupCodes, setBackupCodes] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [setupSent, setSetupSent] = useState(false);
+
+  function goToAdmin() {
+    window.location.assign("/admin");
+  }
 
   async function submitCredentials(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     setError(null);
-    const res = await fetch("/api/admin/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+    const { data, error: err } = await authClient.signIn.email({
+      email,
+      password,
     });
-    const body = await res.json().catch(() => ({}));
     setBusy(false);
-    if (res.ok && body.mfaRequired) {
-      setStageToken(body.stageToken);
-      setStep("mfa");
-    } else if (body.error === "setup_required") {
-      setError("Account setup is not finished. Use the setup link below.");
-    } else if (body.error === "rate_limited") {
-      setError("Too many attempts — try again later.");
-    } else {
-      setError("Invalid email or password.");
+    if (err) {
+      setError(
+        err.status === 429
+          ? "Too many attempts — try again later."
+          : "Invalid email or password."
+      );
+      return;
     }
+    if ((data as { twoFactorRedirect?: boolean })?.twoFactorRedirect) {
+      setStep("mfa");
+      return;
+    }
+    // Signed in without MFA — first login after setup: enroll now.
+    setStep("enroll");
+  }
+
+  async function startEnrollment() {
+    setBusy(true);
+    setError(null);
+    const { data, error: err } = await authClient.twoFactor.enable({
+      password,
+    });
+    setBusy(false);
+    if (err || !data || !("totpURI" in data)) {
+      setError("Could not start two-factor setup — check your password and retry.");
+      return;
+    }
+    setTotpUri(data.totpURI);
+    setBackupCodes(data.backupCodes ?? []);
+    try {
+      setQrDataUrl(await QRCode.toDataURL(data.totpURI, { width: 220 }));
+    } catch {
+      setQrDataUrl(null);
+    }
+    setStep("enroll-verify");
   }
 
   async function submitCode(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     setError(null);
-    const res = await fetch("/api/admin/auth/mfa", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ stageToken, code }),
-    });
-    const body = await res.json().catch(() => ({}));
+    const { error: err } = await authClient.twoFactor.verifyTotp({ code });
     setBusy(false);
-    if (res.ok && body.ok) {
-      router.push("/admin");
-      router.refresh();
-    } else if (body.error === "invalid_or_expired") {
-      setError("Session expired — start again.");
-      setStep("credentials");
-    } else {
+    if (err) {
       setError("Wrong code — try again.");
-    }
-  }
-
-  async function requestSetupLink() {
-    if (!email) {
-      setError("Enter your admin email first, then request the setup link.");
       return;
     }
-    setBusy(true);
-    await fetch("/api/admin/auth/setup-link", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    });
-    setBusy(false);
-    setSetupSent(true);
+    goToAdmin();
   }
 
   return (
@@ -85,13 +91,8 @@ export default function AdminLoginPage() {
             {error}
           </p>
         )}
-        {setupSent && (
-          <p className="mt-3 rounded-md bg-emerald-50 px-3 py-2 text-sm text-emerald-700">
-            If that admin account exists, a setup link was emailed to it.
-          </p>
-        )}
 
-        {step === "credentials" ? (
+        {step === "credentials" && (
           <form onSubmit={submitCredentials} className="mt-4 space-y-3">
             <input
               type="email"
@@ -115,16 +116,13 @@ export default function AdminLoginPage() {
             >
               Continue
             </button>
-            <button
-              type="button"
-              onClick={requestSetupLink}
-              disabled={busy}
-              className="w-full text-center text-xs text-neutral-500 underline"
-            >
-              First time here / forgot password? Email me a setup link
-            </button>
+            <p className="text-center text-xs text-neutral-500">
+              First time here? Finish account setup at /admin/setup first.
+            </p>
           </form>
-        ) : (
+        )}
+
+        {step === "mfa" && (
           <form onSubmit={submitCode} className="mt-4 space-y-3">
             <p className="text-sm text-neutral-600">
               Enter the 6-digit code from your authenticator app.
@@ -144,6 +142,69 @@ export default function AdminLoginPage() {
               className="w-full rounded-md bg-neutral-900 py-2.5 text-sm font-medium text-white disabled:opacity-60"
             >
               Verify
+            </button>
+          </form>
+        )}
+
+        {step === "enroll" && (
+          <div className="mt-4 space-y-3">
+            <p className="text-sm text-neutral-600">
+              You&apos;re signed in, but two-factor authentication isn&apos;t set
+              up yet. It&apos;s required for the admin account.
+            </p>
+            <button
+              onClick={startEnrollment}
+              disabled={busy}
+              className="w-full rounded-md bg-neutral-900 py-2.5 text-sm font-medium text-white disabled:opacity-60"
+            >
+              Set up authenticator app
+            </button>
+          </div>
+        )}
+
+        {step === "enroll-verify" && (
+          <form onSubmit={submitCode} className="mt-4 space-y-3">
+            <p className="text-sm text-neutral-600">
+              Scan this QR code with your authenticator app, then enter the
+              6-digit code it shows.
+            </p>
+            {qrDataUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={qrDataUrl}
+                alt="TOTP QR code"
+                className="mx-auto rounded-md border border-neutral-200"
+              />
+            ) : totpUri ? (
+              <p className="break-all rounded-md bg-neutral-50 p-2 font-mono text-[10px] text-neutral-600">
+                {totpUri}
+              </p>
+            ) : null}
+            {backupCodes.length > 0 && (
+              <details className="rounded-md bg-amber-50 p-3 text-xs text-amber-800">
+                <summary className="cursor-pointer font-medium">
+                  Backup codes — save these somewhere safe
+                </summary>
+                <p className="mt-2 break-all font-mono">
+                  {backupCodes.join("  ")}
+                </p>
+              </details>
+            )}
+            <input
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={6}
+              required
+              placeholder="000000"
+              value={code}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+              className="w-full rounded-md border border-neutral-300 px-3 py-3 text-center font-mono text-xl tracking-[0.5em] outline-none focus:border-neutral-900"
+            />
+            <button
+              disabled={busy || code.length !== 6}
+              className="w-full rounded-md bg-neutral-900 py-2.5 text-sm font-medium text-white disabled:opacity-60"
+            >
+              Confirm and finish
             </button>
           </form>
         )}

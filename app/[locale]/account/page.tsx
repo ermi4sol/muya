@@ -4,8 +4,8 @@ import { getUserSession } from "@/lib/auth/session";
 
 export default async function AccountPage() {
   const session = await getUserSession();
-  if (!session || session.role !== "customer") {
-    redirect("/restore");
+  if (!session) {
+    redirect("/signin");
   }
   const t = await getTranslations("account");
 
@@ -18,7 +18,6 @@ export default async function AccountPage() {
       </header>
       <main className="mx-auto max-w-3xl px-4 py-10">
         <h1 className="text-2xl font-bold text-ink">{t("title")}</h1>
-        <p className="mt-1 text-sm text-ink-soft">{session.email}</p>
         <div className="mt-6 rounded-card border border-line bg-surface p-6 text-ink-soft shadow-card">
           {t("empty")}
         </div>

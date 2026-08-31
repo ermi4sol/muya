@@ -42,7 +42,11 @@
     "errInvalid": "That link is invalid or has expired — request a new one.",
     "errRate": "Too many attempts — please try again later.",
     "errSuspended": "This account is suspended. Contact support.",
-    "errGeneric": "Something went wrong — please try again."
+    "errGeneric": "Something went wrong — please try again.",
+    "telegramSigninBody": "Sign in with your Telegram account — no passwords, no email.",
+    "telegramSignupBody": "Create your store with your Telegram account. Your products, orders and payments all arrive in Telegram.",
+    "telegramSigning": "Signing you in…",
+    "telegramHint": "Purchases and updates are delivered by our bot @MuyaOfficialBot."
   },
   "dashboard": {
     "welcome": "Welcome",

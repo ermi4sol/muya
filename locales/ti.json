@@ -42,7 +42,11 @@
     "errInvalid": "እዚ ሊንክ ቅኑዕ ኣይኮነን ወይ ግዜኡ ሓሊፉ እዩ — ሓድሽ ሕተት።",
     "errRate": "ብዙሕ ፈተነታት — በጃኻ ጸኒሕካ ፈትን።",
     "errSuspended": "እዚ ሕሳብ ታጊዱ እዩ። ደገፍ ተወከስ።",
-    "errGeneric": "ጌጋ ተፈጢሩ — በጃኻ ደጊምካ ፈትን።"
+    "errGeneric": "ጌጋ ተፈጢሩ — በጃኻ ደጊምካ ፈትን።",
+    "telegramSigninBody": "ብናይ ቴሌግራም ሕሳብኩም እተዉ — ፓስዎርድ የለን፣ ኢመይል የለን።",
+    "telegramSignupBody": "ብናይ ቴሌግራም ሕሳብኩም ድኳንኩም ክፈቱ። ፍርያትኩም፣ ትእዛዛትኩምን ክፍሊታትኩምን ኩሉ ብቴሌግራም ይበጽሓኩም።",
+    "telegramSigning": "ንኣትወኩም ኣለና…",
+    "telegramHint": "ዕድጊታትን ሓበሬታታትን ብቦትና @MuyaOfficialBot ይለኣኹ።"
   },
   "dashboard": {
     "welcome": "እንቋዕ ብደሓን መጻእካ",

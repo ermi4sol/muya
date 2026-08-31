@@ -34,4 +34,13 @@ export const env = {
   zoomAccountId: () => serverOnly("ZOOM_ACCOUNT_ID"),
   zoomClientId: () => serverOnly("ZOOM_CLIENT_ID"),
   zoomClientSecret: () => serverOnly("ZOOM_CLIENT_SECRET"),
+  // ---- v2 (Telegram + Better Auth) ----
+  telegramBotToken: () => serverOnly("TELEGRAM_BOT_TOKEN"),
+  telegramBotUsername: () =>
+    process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME ??
+    process.env.TELEGRAM_BOT_USERNAME ??
+    "MuyaOfficialBot",
+  telegramWebhookSecret: () => serverOnly("TELEGRAM_WEBHOOK_SECRET"),
+  /** Direct Postgres connection (Supabase pooler) — required by Better Auth. */
+  databaseUrl: () => serverOnly("DATABASE_URL"),
 };
