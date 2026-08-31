@@ -8,6 +8,7 @@ import {
   getTelegramWebhookInfo,
   setTelegramWebhook,
 } from "@/lib/telegram/api";
+import { processFunnelSteps, sendScheduledFlows } from "@/lib/telegram/growth";
 
 /**
  * Background sweep (invoked by the Netlify scheduled function, hourly):
@@ -21,7 +22,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
   const db = supabaseAdmin();
-  const results = { retried: 0, resolved: 0, dead: 0, reminders: 0, webhook: "ok" };
+  const results = {
+    retried: 0,
+    resolved: 0,
+    dead: 0,
+    reminders: 0,
+    funnelSteps: 0,
+    flowMessages: 0,
+    webhook: "ok",
+  };
 
   // ---- 1. failed job retries ----
   const { data: jobs } = await db
@@ -112,7 +121,19 @@ export async function POST(req: Request) {
       .eq("id", w.id);
   }
 
-  // ---- 3. Telegram webhook self-heal ----
+  // ---- 3. funnel drips + scheduled flows ----
+  try {
+    results.funnelSteps = await processFunnelSteps();
+  } catch (e) {
+    console.error("funnel processing failed:", e);
+  }
+  try {
+    results.flowMessages = await sendScheduledFlows();
+  } catch (e) {
+    console.error("flow sending failed:", e);
+  }
+
+  // ---- 4. Telegram webhook self-heal ----
   try {
     const expected = `${env.appUrl()}/api/telegram/webhook`;
     const info = (await getTelegramWebhookInfo()) as { url?: string };

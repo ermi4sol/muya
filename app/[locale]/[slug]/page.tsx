@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { VisitBeacon } from "@/components/storefront/VisitBeacon";
+import { RefBeacon } from "@/components/storefront/RefBeacon";
 import { TYPE_META, LINK_OUT_TYPES } from "@/lib/product-types";
 import type { ProductType } from "@/lib/product-types";
 import type { ProductRow } from "@/lib/db/creator";
@@ -54,6 +55,7 @@ export default async function StorefrontPage({
   return (
     <div className="min-h-dvh" style={{ background: th.bg }}>
       <VisitBeacon slug={slug} />
+      <RefBeacon />
       {/* single centered column, even on PC */}
       <div className="mx-auto max-w-md px-4 py-8">
         <div className="flex justify-end">

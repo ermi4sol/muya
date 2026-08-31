@@ -10,6 +10,7 @@ import {
   notifyCreatorSale,
   deliverFileViaTelegram,
 } from "@/lib/telegram/notify";
+import { enrollInFunnels } from "@/lib/telegram/growth";
 import { env } from "@/lib/env";
 
 interface OrderFull {
@@ -458,6 +459,17 @@ export async function fulfillOrder(orderOrId: OrderFull | string): Promise<void>
         caption: `📥 ${tgEscape(order.products.title)} — from ${tgEscape(creatorName)}`,
       });
     }
+  }
+
+  // Funnel enrollment (best-effort; drips run from the cron sweep)
+  try {
+    await enrollInFunnels({
+      creatorId: order.creator_id,
+      productId: order.product_id,
+      customerTelegramId: order.customers.telegram_user_id,
+    });
+  } catch (e) {
+    console.error("funnel enrollment failed:", e);
   }
 
   // Surface customer-message failures to the retry sweep (creator ping is best-effort)

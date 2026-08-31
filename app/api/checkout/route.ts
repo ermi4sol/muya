@@ -67,6 +67,11 @@ async function handle(req: Request) {
   const orderIds: string[] = [];
   const alerts: Promise<unknown>[] = [];
 
+  // Affiliate attribution: ?ref= cookie set by RefBeacon on the storefront
+  const refCode =
+    req.headers.get("cookie")?.match(/(?:^|;\s*)muya_ref=([a-z0-9]{4,20})/i)?.[1] ??
+    null;
+
   for (const item of b.items) {
     const { data: product } = await db
       .from("products")
@@ -190,6 +195,24 @@ async function handle(req: Request) {
         captured_telegram_username:
           cust?.telegram_username ?? session.telegramId,
       });
+    }
+
+    // Affiliate referral record (held until the creator pays it out)
+    if (refCode && total > 0) {
+      const { data: affiliate } = await db
+        .from("affiliates")
+        .select("id, commission_percent, affiliate_customer_id")
+        .eq("creator_id", product.creator_id)
+        .eq("referral_code", refCode)
+        .maybeSingle();
+      if (affiliate && affiliate.affiliate_customer_id !== customerId) {
+        await db.from("affiliate_referrals").insert({
+          affiliate_id: affiliate.id,
+          order_id: order.id,
+          commission_amount:
+            Math.round(itemAmount * Number(affiliate.commission_percent)) / 100,
+        });
+      }
     }
 
     const totalLabel = `${total.toLocaleString()} ${product.currency}`;
