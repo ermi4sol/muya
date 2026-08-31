@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getUserSession } from "@/lib/auth/session";
 import { supabaseAdmin } from "@/lib/db/client";
-import { sendShippedEmail } from "@/lib/email/fulfillment";
+import { notifyShipmentUpdate } from "@/lib/telegram/notify";
 
 const Body = z.object({
   status: z.enum(["shipped", "delivered"]),
@@ -27,7 +27,7 @@ export async function POST(
   const { data: order } = await db
     .from("orders")
     .select(
-      "id, creator_id, payment_status, metadata, products(title), customers(email, preferred_locale)"
+      "id, creator_id, payment_status, metadata, products(title), customers(telegram_user_id), creators(display_name, store_slug)"
     )
     .eq("id", id)
     .maybeSingle();
@@ -49,20 +49,25 @@ export async function POST(
     return NextResponse.json({ error: "update_failed" }, { status: 500 });
   }
 
-  if (parsed.data.status === "shipped") {
-    const product = order.products as unknown as { title: string } | null;
-    const customer = order.customers as unknown as {
-      email: string; preferred_locale: string | null;
-    } | null;
-    if (customer) {
-      await sendShippedEmail({
-        to: customer.email,
+  const product = order.products as unknown as { title: string } | null;
+  const customer = order.customers as unknown as {
+    telegram_user_id: string;
+  } | null;
+  const creator = order.creators as unknown as {
+    display_name: string | null;
+    store_slug: string;
+  } | null;
+  if (customer) {
+    try {
+      await notifyShipmentUpdate({
+        telegramUserId: customer.telegram_user_id,
         productTitle: product?.title ?? "Your order",
-        tracking: parsed.data.tracking,
-        locale:
-          ((order.metadata as Record<string, unknown>)?.locale as string) ??
-          customer.preferred_locale ?? "en",
+        creatorName: creator?.display_name ?? creator?.store_slug ?? "the creator",
+        status: parsed.data.status,
+        trackingNumber: parsed.data.tracking ?? null,
       });
+    } catch (e) {
+      console.error("shipment notify failed:", e);
     }
   }
   return NextResponse.json({ ok: true });

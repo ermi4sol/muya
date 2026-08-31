@@ -353,7 +353,14 @@
     "remove": "ኣወግድ",
     "soldOut": "ተሸይጡ ወዲኡ",
     "inStock": "{n} ኣብ ክምችት",
-    "deliveredViaTelegram": "ብቴሌግራም ይበጽሕ"
+    "deliveredViaTelegram": "ብቴሌግራም ይበጽሕ",
+    "telegramConnected": "ቴሌግራም ተላጊቡ — ምብጻሕ ኣብ ቻትኩም ይመጽእ",
+    "telegramToOrder": "ትእዛዝ ንምግባር ቴሌግራም ኣላግቡ — ኣብኡ እዩ ዝበጽሕ።",
+    "telegramRequired": "በጃኹም መጀመርታ ቴሌግራም ኣላግቡ።",
+    "noPayNoteTg": "ሕጂ ዋላ ሓደ ኣይትኸፍሉን። ትእዛዝኩም ኣረጋጊጽና ብቴሌግራም ነብጽሓልኩም።",
+    "leadReady": "ናትኩም እዩ! ኣብ ታሕቲ ኣውርዱ — ቦታኹም'ውን ተመዝጊቡ።",
+    "leadNote": "ነጻ — ምስ ኣእተኹም ብኡ ንብኡ ምውራድ።",
+    "statusTelegram": "ሓበሬታታት ኣብ ቴሌግራም ቻትኩም ብ@MuyaOfficialBot ይበጽሑ"
   },
   "community": {
     "placeholder": "ምስ ማሕበረሰብ ገለ ኣካፍል…",

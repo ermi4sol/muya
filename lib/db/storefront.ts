@@ -44,6 +44,16 @@ export async function getPublicProduct(slug: string, productId: string) {
   const product = store.products.find((p) => p.id === productId);
   if (!product) return null;
 
+  const { data: customFieldRows } = await supabaseAdmin()
+    .from("product_custom_fields")
+    .select("label, field_type, sort_order")
+    .eq("product_id", productId)
+    .order("sort_order");
+  const customFields = (customFieldRows ?? []) as {
+    label: string;
+    field_type: string;
+  }[];
+
   let variants: VariantPublic[] = [];
   let attributeOrder: string[] = [];
   if (product.type === "physical") {
@@ -62,5 +72,5 @@ export async function getPublicProduct(slug: string, productId: string) {
     variants = (vars ?? []) as VariantPublic[];
     attributeOrder = (attrs ?? []).map((a) => a.name);
   }
-  return { creator: store.creator, product, variants, attributeOrder };
+  return { creator: store.creator, product, variants, attributeOrder, customFields };
 }

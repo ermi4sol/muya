@@ -21,7 +21,7 @@ export default async function AdminLedgerPage() {
   const { data: orders } = await db
     .from("orders")
     .select(
-      "id, created_at, payment_status, quantity, total_charged, commission_amount, currency, metadata, products(title, type), creators(store_slug), customers(email)"
+      "id, created_at, payment_status, quantity, total_charged, commission_amount, currency, metadata, products(title, type), creators(store_slug), customers(telegram_username, name)"
     )
     .order("created_at", { ascending: false })
     .limit(100);
@@ -59,7 +59,7 @@ export default async function AdminLedgerPage() {
               {(orders ?? []).map((o) => {
                 const p = o.products as unknown as { title: string; type: string } | null;
                 const cr = o.creators as unknown as { store_slug: string } | null;
-                const cu = o.customers as unknown as { email: string } | null;
+                const cu = o.customers as unknown as { telegram_username: string | null; name: string | null } | null;
                 return (
                   <tr key={o.id} className="text-neutral-700">
                     <td className="whitespace-nowrap px-3 py-2.5 text-xs">
@@ -67,7 +67,7 @@ export default async function AdminLedgerPage() {
                     </td>
                     <td className="max-w-[180px] truncate px-3 py-2.5">{p?.title}</td>
                     <td className="px-3 py-2.5">/{cr?.store_slug}</td>
-                    <td className="max-w-[160px] truncate px-3 py-2.5">{cu?.email}</td>
+                    <td className="max-w-[160px] truncate px-3 py-2.5">{cu?.telegram_username ? `@${cu.telegram_username}` : (cu?.name ?? "—")}</td>
                     <td className="whitespace-nowrap px-3 py-2.5 text-right font-semibold">
                       {Number(o.total_charged).toLocaleString()} {o.currency}
                     </td>

@@ -1,6 +1,6 @@
 import { supabaseAdmin } from "@/lib/db/client";
 import { writeAuditLog } from "@/lib/db/identity";
-import { sendEmail, brandedEmail } from "@/lib/email/send";
+import { notifyRefund } from "@/lib/telegram/notify";
 
 export interface LedgerEntry {
   id: string;
@@ -82,7 +82,7 @@ export async function refundOrder(
     .update({ payment_status: "refunded" })
     .eq("id", orderId)
     .eq("payment_status", "paid")
-    .select("id, creator_id, creator_net_amount, currency, customer_id, products(title), customers(email)");
+    .select("id, creator_id, creator_net_amount, currency, customer_id, products(title), customers(telegram_user_id), creators(display_name, store_slug)");
   if (!claimed || claimed.length === 0) {
     return { ok: false, error: "not_paid" };
   }
@@ -117,16 +117,24 @@ export async function refundOrder(
     target_id: orderId,
   });
 
-  const customer = order.customers as unknown as { email: string } | null;
+  const customer = order.customers as unknown as {
+    telegram_user_id: string;
+  } | null;
   const product = order.products as unknown as { title: string } | null;
+  const creator = order.creators as unknown as {
+    display_name: string | null;
+    store_slug: string;
+  } | null;
   if (customer) {
-    await sendEmail({
-      to: customer.email,
-      subject: `Refund processed — ${product?.title ?? "your order"}`,
-      html: brandedEmail(
-        `<p>Your order <strong>${product?.title ?? ""}</strong> was refunded. The MUYA team will arrange the repayment with you directly. Access to the product has been closed.</p>`
-      ),
-    });
+    try {
+      await notifyRefund({
+        telegramUserId: customer.telegram_user_id,
+        productTitle: product?.title ?? "your order",
+        creatorName: creator?.display_name ?? creator?.store_slug ?? "the creator",
+      });
+    } catch (e) {
+      console.error("refund notify failed:", e);
+    }
   }
   return { ok: true };
 }

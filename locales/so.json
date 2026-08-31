@@ -353,7 +353,14 @@
     "remove": "Ka saar",
     "soldOut": "Waa la iibiyay",
     "inStock": "{n} ayaa kaydka ku jira",
-    "deliveredViaTelegram": "Waxaa lagu keenaa Telegram"
+    "deliveredViaTelegram": "Waxaa lagu keenaa Telegram",
+    "telegramConnected": "Telegram waa la xiray — gaarsiintu waxay imanaysaa chat-kaaga",
+    "telegramToOrder": "Si aad u dalbato ku xir Telegram — halkaas ayaa laguugu keenayaa.",
+    "telegramRequired": "Fadlan marka hore ku xir Telegram.",
+    "noPayNoteTg": "Hadda waxba ma bixinaysid. Waanu xaqiijinaynaa dalabkaaga oo Telegram ayaanu kuugu keenaynaa.",
+    "leadReady": "Waa adigaa iska leh! Hoos ka soo deji — boosorkaagana waanu kaydinnay.",
+    "leadNote": "Bilaash — soo dejin degdeg ah kadib markaad gudbiso.",
+    "statusTelegram": "Wararku waxay imanayaan chat-kaaga Telegram ee @MuyaOfficialBot"
   },
   "community": {
     "placeholder": "Wax la wadaag bulshada…",

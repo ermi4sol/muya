@@ -14,7 +14,7 @@ export default async function AdminPayoutsPage() {
   const { data: payouts } = await db
     .from("payout_requests")
     .select(
-      "id, amount, status, payout_method, payout_details, requested_at, processed_at, rejection_reason, creators(display_name, store_slug, email, currency)"
+      "id, amount, status, payout_method, payout_details, requested_at, processed_at, rejection_reason, creators(display_name, store_slug, telegram_username, currency)"
     )
     .order("requested_at", { ascending: false })
     .limit(50);
@@ -42,7 +42,7 @@ export default async function AdminPayoutsPage() {
           )}
           {open.map((p) => {
             const c = p.creators as unknown as {
-              display_name: string | null; store_slug: string; email: string; currency: string;
+              display_name: string | null; store_slug: string; telegram_username: string | null; currency: string;
             } | null;
             const details = (p.payout_details ?? {}) as Record<string, string>;
             return (
@@ -50,7 +50,7 @@ export default async function AdminPayoutsPage() {
                 <div className="flex flex-wrap items-start justify-between gap-2">
                   <div>
                     <p className="font-semibold text-neutral-900">
-                      {c?.display_name ?? c?.store_slug} · {c?.email}
+                      {c?.display_name ?? c?.store_slug} · {c?.telegram_username ? `@${c.telegram_username}` : "—"}
                     </p>
                     <p className="text-xs text-neutral-500">
                       requested {new Date(p.requested_at).toLocaleString()}

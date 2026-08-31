@@ -24,14 +24,14 @@ export default async function AdminLookupPage({
     const [{ data: cr }, { data: cu }] = await Promise.all([
       db
         .from("creators")
-        .select("id, email, store_slug, display_name, status, created_at, creator_subscriptions(tier)")
-        .or(`email.ilike.${like},store_slug.ilike.${like},display_name.ilike.${like}`)
+        .select("id, telegram_username, store_slug, display_name, status, created_at, creator_subscriptions(tier)")
+        .or(`telegram_username.ilike.${like},store_slug.ilike.${like},display_name.ilike.${like}`)
         .limit(1)
         .maybeSingle(),
       db
         .from("customers")
-        .select("id, email, name, created_at")
-        .ilike("email", like)
+        .select("id, telegram_username, name, created_at")
+        .or(`telegram_username.ilike.${like},name.ilike.${like}`)
         .limit(1)
         .maybeSingle(),
     ]);
@@ -60,13 +60,13 @@ export default async function AdminLookupPage({
       <main className="mx-auto max-w-3xl px-4 py-8">
         <h1 className="text-xl font-semibold text-neutral-900">Support lookup</h1>
         <p className="mt-1 text-xs text-neutral-500">
-          Read-only — search by email, store link, or name.
+          Read-only — search by Telegram handle, store link, or name.
         </p>
         <form className="mt-4 flex gap-2">
           <input
             name="q"
             defaultValue={q ?? ""}
-            placeholder="email, store slug, or name…"
+            placeholder="telegram handle, store slug, or name…"
             className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-neutral-900"
           />
           <button className="rounded-lg bg-neutral-900 px-5 py-2.5 text-sm font-semibold text-white">
@@ -86,7 +86,7 @@ export default async function AdminLookupPage({
             <p className="mt-1 font-semibold text-neutral-900">
               {creator.display_name ?? "—"} · /{creator.store_slug}
             </p>
-            <p className="text-sm text-neutral-600">{creator.email}</p>
+            <p className="text-sm text-neutral-600">{creator.telegram_username ? `@${creator.telegram_username}` : "—"}</p>
             <p className="mt-1 text-xs text-neutral-500">
               {creator.status} ·{" "}
               {(creator.creator_subscriptions as unknown as { tier: string } | null)?.tier ?? "free"}{" "}
@@ -99,7 +99,7 @@ export default async function AdminLookupPage({
           <div className="mt-4 rounded-xl border border-neutral-200 bg-white p-4">
             <p className="text-xs font-semibold uppercase text-neutral-400">Customer</p>
             <p className="mt-1 font-semibold text-neutral-900">{customer.name ?? "—"}</p>
-            <p className="text-sm text-neutral-600">{customer.email}</p>
+            <p className="text-sm text-neutral-600">{customer.telegram_username ? `@${customer.telegram_username}` : "—"}</p>
             {customerOrders.length > 0 && (
               <ul className="mt-2 divide-y divide-neutral-100 border-t border-neutral-100">
                 {customerOrders.map((o, i) => (

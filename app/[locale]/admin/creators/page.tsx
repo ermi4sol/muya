@@ -14,7 +14,7 @@ export default async function AdminCreatorsPage() {
   const { data: creators } = await db
     .from("creators")
     .select(
-      "id, email, store_slug, display_name, status, created_at, creator_subscriptions(tier)"
+      "id, telegram_username, store_slug, display_name, status, created_at, creator_subscriptions(tier)"
     )
     .order("created_at", { ascending: false })
     .limit(100);
@@ -58,7 +58,7 @@ export default async function AdminCreatorsPage() {
                     </a>
                   </p>
                   <p className="text-xs text-neutral-500">
-                    {c.email} · joined {new Date(c.created_at).toLocaleDateString()}
+                    {c.telegram_username ? `@${c.telegram_username}` : "—"} · joined {new Date(c.created_at).toLocaleDateString()}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">

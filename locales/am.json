@@ -353,7 +353,14 @@
     "remove": "አስወግድ",
     "soldOut": "ተሽጦ አልቋል",
     "inStock": "{n} በክምችት",
-    "deliveredViaTelegram": "በቴሌግራም ይደርሳል"
+    "deliveredViaTelegram": "በቴሌግራም ይደርሳል",
+    "telegramConnected": "ቴሌግራም ተገናኝቷል — መላኪያው በቻትዎ ይደርሳል",
+    "telegramToOrder": "ትዕዛዝ ለማድረግ ቴሌግራም ያገናኙ — እዚያ ነው የሚደርሰው።",
+    "telegramRequired": "እባክዎ መጀመሪያ ቴሌግራም ያገናኙ።",
+    "noPayNoteTg": "አሁን ምንም አይከፍሉም። ትዕዛዝዎን አረጋግጠን በቴሌግራም እናደርሳለን።",
+    "leadReady": "የእርስዎ ነው! ከታች ያውርዱ — ቦታዎም ተመዝግቧል።",
+    "leadNote": "ነፃ — ካስገቡ በኋላ ወዲያውኑ ማውረድ።",
+    "statusTelegram": "ዝማኔዎች በቴሌግራም ቻትዎ በ@MuyaOfficialBot ይደርሳሉ"
   },
   "community": {
     "placeholder": "ከማህበረሰቡ ጋር የሆነ ነገር ያጋሩ…",

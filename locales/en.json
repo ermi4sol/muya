@@ -353,7 +353,14 @@
     "remove": "Remove",
     "soldOut": "Sold out",
     "inStock": "{n} in stock",
-    "deliveredViaTelegram": "Delivered via Telegram"
+    "deliveredViaTelegram": "Delivered via Telegram",
+    "telegramConnected": "Telegram connected — delivery arrives in your chat",
+    "telegramToOrder": "Connect Telegram to place your order — that's where it gets delivered.",
+    "telegramRequired": "Please connect Telegram first.",
+    "noPayNoteTg": "You pay nothing now. We confirm your order and deliver it on Telegram.",
+    "leadReady": "It's yours! Download below — we also saved your spot on the list.",
+    "leadNote": "Free — instant download after you submit.",
+    "statusTelegram": "Updates arrive in your Telegram chat with @MuyaOfficialBot"
   },
   "community": {
     "placeholder": "Share something with the community…",

@@ -3,7 +3,7 @@ import { z } from "zod";
 import { getAdminSession, requireAdminRole } from "@/lib/auth/session";
 import { supabaseAdmin } from "@/lib/db/client";
 import { writeAuditLog } from "@/lib/db/identity";
-import { sendEmail, brandedEmail } from "@/lib/email/send";
+import { sendTelegramMessage, tgEscape } from "@/lib/telegram/api";
 
 const Body = z.object({
   action: z.enum(["processing", "paid", "reject"]),
@@ -26,13 +26,13 @@ export async function POST(
   const db = supabaseAdmin();
   const { data: payout } = await db
     .from("payout_requests")
-    .select("id, creator_id, amount, status, payout_method, creators(email, display_name, currency)")
+    .select("id, creator_id, amount, status, payout_method, creators(telegram_user_id, display_name, currency)")
     .eq("id", id)
     .maybeSingle();
   if (!payout) return NextResponse.json({ error: "not_found" }, { status: 404 });
 
   const creator = payout.creators as unknown as {
-    email: string; display_name: string | null; currency: string;
+    telegram_user_id: string; display_name: string | null; currency: string;
   } | null;
   const action = parsed.data.action;
 
@@ -78,13 +78,14 @@ export async function POST(
       balance_after: Math.round((prev - amount) * 100) / 100,
     });
     if (creator) {
-      await sendEmail({
-        to: creator.email,
-        subject: `✅ Payout sent — ${amount.toLocaleString()} ${creator.currency}`,
-        html: brandedEmail(
-          `<p>Your payout of <strong>${amount.toLocaleString()} ${creator.currency}</strong> (${payout.payout_method}) has been sent. It may take a little time to arrive depending on your bank/telebirr.</p>`
-        ),
-      });
+      try {
+        await sendTelegramMessage(
+          creator.telegram_user_id,
+          `✅ <b>Payout sent</b> — <b>${amount.toLocaleString()} ${tgEscape(creator.currency)}</b> (${tgEscape(String(payout.payout_method))}). It may take a little time to arrive depending on your bank/telebirr.`
+        );
+      } catch (e) {
+        console.error("payout notify failed:", e);
+      }
     }
   } else {
     if (!["pending", "processing"].includes(payout.status)) {
@@ -100,13 +101,14 @@ export async function POST(
       })
       .eq("id", id);
     if (creator) {
-      await sendEmail({
-        to: creator.email,
-        subject: "About your payout request",
-        html: brandedEmail(
-          `<p>Your payout request of ${Number(payout.amount).toLocaleString()} ${creator.currency} was rejected.${parsed.data.reason ? ` Reason: "${parsed.data.reason}".` : ""} The amount stays in your MUYA balance — you can request again anytime.</p>`
-        ),
-      });
+      try {
+        await sendTelegramMessage(
+          creator.telegram_user_id,
+          `❌ <b>Payout request rejected</b> — ${Number(payout.amount).toLocaleString()} ${tgEscape(creator.currency)}.${parsed.data.reason ? ` Reason: "${tgEscape(parsed.data.reason)}".` : ""} The amount stays in your MUYA balance — you can request again anytime.`
+        );
+      } catch (e) {
+        console.error("payout notify failed:", e);
+      }
     }
   }
 

@@ -4,6 +4,7 @@ import { getPublicProduct } from "@/lib/db/storefront";
 import { themeOf } from "@/lib/themes";
 import { Link } from "@/i18n/navigation";
 import { BuyPanel } from "@/components/storefront/BuyPanel";
+import { env } from "@/lib/env";
 
 export const revalidate = 60;
 
@@ -17,7 +18,7 @@ export default async function ProductPage({
   const data = await getPublicProduct(slug, id);
   if (!data) notFound();
   const t = await getTranslations("shop");
-  const { creator, product, variants, attributeOrder } = data;
+  const { creator, product, variants, attributeOrder, customFields } = data;
 
   // Physical products live under the Shop hub
   if (product.type === "physical") redirect(`/${slug}/shop/${id}`);
@@ -144,6 +145,8 @@ export default async function ProductPage({
             }}
             variants={variants}
             attributeOrder={attributeOrder}
+            customFields={customFields}
+            botUsername={env.telegramBotUsername()}
             themeButton={{ background: th.button, color: th.buttonText }}
           />
         </div>

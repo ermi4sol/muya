@@ -9,7 +9,7 @@ export async function GET() {
   const { data: orders } = await supabaseAdmin()
     .from("orders")
     .select(
-      "id, created_at, payment_status, quantity, item_amount, shipping_fee, total_charged, commission_amount, creator_net_amount, currency, products(title, type), creators(store_slug), customers(email)"
+      "id, created_at, payment_status, quantity, item_amount, shipping_fee, total_charged, commission_amount, creator_net_amount, currency, products(title, type), creators(store_slug), customers(telegram_username)"
     )
     .order("created_at", { ascending: false })
     .limit(5000);
@@ -29,7 +29,7 @@ export async function GET() {
         esc((o.products as unknown as { title: string } | null)?.title),
         (o.products as unknown as { type: string } | null)?.type,
         (o.creators as unknown as { store_slug: string } | null)?.store_slug,
-        (o.customers as unknown as { email: string } | null)?.email,
+        (o.customers as unknown as { telegram_username: string | null } | null)?.telegram_username,
         o.quantity,
         o.item_amount,
         o.shipping_fee,

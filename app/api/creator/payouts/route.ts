@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { getUserSession } from "@/lib/auth/session";
 import { createPayoutRequest } from "@/lib/db/ledger";
-import { sendEmail, brandedEmail } from "@/lib/email/send";
+import { sendAdminAlert } from "@/lib/email/orders";
 
 const Body = z.object({
   amount: z.number().positive().max(100000000),
@@ -28,14 +28,12 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: result.error }, { status: 409 });
   }
   // Alert the admin (MUYA pays out manually, then marks paid in the panel)
-  await sendEmail({
-    to: "ermiyas4solomon@gmail.com",
+  await sendAdminAlert({
     subject: `💸 Payout request — ${parsed.data.amount.toLocaleString()} ETB (${parsed.data.method})`,
-    html: brandedEmail(
-      `<p><strong>New payout request</strong></p>
-       <p>Creator: ${session.email}<br/>Amount: ${parsed.data.amount.toLocaleString()} ETB<br/>Method: ${parsed.data.method}<br/>Account: ${parsed.data.details.account_name} · ${parsed.data.details.account_number}${parsed.data.details.bank_name ? ` · ${parsed.data.details.bank_name}` : ""}</p>
-       <p>Process it from the admin panel payout queue.</p>`
-    ),
+    html: `<p><strong>New payout request</strong></p>
+       <p>Creator: ${session.telegramId ? `Telegram ${session.telegramId}` : session.sub}<br/>Amount: ${parsed.data.amount.toLocaleString()} ETB<br/>Method: ${parsed.data.method}<br/>Account: ${parsed.data.details.account_name} · ${parsed.data.details.account_number}${parsed.data.details.bank_name ? ` · ${parsed.data.details.bank_name}` : ""}</p>`,
+    ctaPath: "/admin/payouts",
+    ctaLabel: "Open the payout queue",
   });
   return NextResponse.json({ ok: true });
 }

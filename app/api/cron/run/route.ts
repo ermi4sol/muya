@@ -1,13 +1,19 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/db/client";
 import { fulfillOrder } from "@/lib/fulfillment";
-import { sendEmail, brandedEmail, ctaButton } from "@/lib/email/send";
 import { env } from "@/lib/env";
+import {
+  sendTelegramMessage,
+  tgEscape,
+  getTelegramWebhookInfo,
+  setTelegramWebhook,
+} from "@/lib/telegram/api";
 
 /**
  * Background sweep (invoked by the Netlify scheduled function, hourly):
- * 1. retries failed fulfillment jobs with backoff
- * 2. sends webinar reminder emails ~24h before start
+ * 1. retries failed fulfillment/notification jobs with backoff
+ * 2. sends webinar reminders via the bot ~24h before start
+ * 3. self-heals the Telegram webhook registration
  */
 export async function POST(req: Request) {
   const auth = req.headers.get("authorization");
@@ -15,7 +21,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "forbidden" }, { status: 403 });
   }
   const db = supabaseAdmin();
-  const results = { retried: 0, resolved: 0, dead: 0, reminders: 0 };
+  const results = { retried: 0, resolved: 0, dead: 0, reminders: 0, webhook: "ok" };
 
   // ---- 1. failed job retries ----
   const { data: jobs } = await db
@@ -56,10 +62,10 @@ export async function POST(req: Request) {
     }
   }
 
-  // ---- 2. webinar reminders (24h window) ----
+  // ---- 2. webinar reminders via the bot (24h window) ----
   const { data: webinars } = await db
     .from("products")
-    .select("id, title, config")
+    .select("id, title, config, creators(display_name, store_slug)")
     .eq("type", "webinar")
     .eq("status", "active");
 
@@ -70,30 +76,52 @@ export async function POST(req: Request) {
     const hoursAway = (start - Date.now()) / 3600000;
     if (hoursAway <= 0 || hoursAway > 24) continue;
 
+    const creator = w.creators as unknown as {
+      display_name: string | null;
+      store_slug: string;
+    } | null;
+    const creatorName = creator?.display_name ?? creator?.store_slug ?? "the creator";
+
     const { data: registrants } = await db
       .from("webinar_registrants")
-      .select("join_url, entitlements(customers(email))")
+      .select("join_url, entitlements(customers(telegram_user_id))")
       .eq("product_id", w.id);
 
     for (const r of registrants ?? []) {
-      const email = (
-        r.entitlements as unknown as { customers: { email: string } | null } | null
-      )?.customers?.email;
-      if (!email) continue;
+      const telegramId = (
+        r.entitlements as unknown as {
+          customers: { telegram_user_id: string } | null;
+        } | null
+      )?.customers?.telegram_user_id;
+      if (!telegramId) continue;
       const join = r.join_url ?? (config.zoom_join_url as string) ?? null;
-      await sendEmail({
-        to: email,
-        subject: `⏰ Starts soon — ${w.title}`,
-        html: brandedEmail(
-          `<p><strong>${w.title}</strong> goes live ${new Date(start).toLocaleString()}.</p>${join ? ctaButton(join, "Join the session") : ""}`
-        ),
-      });
-      results.reminders++;
+      try {
+        await sendTelegramMessage(
+          telegramId,
+          `⏰ <b>Starts soon!</b>\n\n<b>${tgEscape(w.title ?? "Webinar")}</b> from <b>${tgEscape(creatorName)}</b> goes live ${tgEscape(new Date(start).toLocaleString("en-GB", { dateStyle: "full", timeStyle: "short" }))}.`,
+          join ? { buttons: [[{ text: "🎥 Join the session", url: join }]] } : {}
+        );
+        results.reminders++;
+      } catch (e) {
+        console.error("webinar reminder failed:", e);
+      }
     }
     await db
       .from("products")
       .update({ config: { ...config, reminder_sent: true } })
       .eq("id", w.id);
+  }
+
+  // ---- 3. Telegram webhook self-heal ----
+  try {
+    const expected = `${env.appUrl()}/api/telegram/webhook`;
+    const info = (await getTelegramWebhookInfo()) as { url?: string };
+    if (info?.url !== expected) {
+      await setTelegramWebhook(expected, env.telegramWebhookSecret());
+      results.webhook = "re-registered";
+    }
+  } catch (e) {
+    results.webhook = `error: ${e instanceof Error ? e.message : String(e)}`;
   }
 
   return NextResponse.json(results);

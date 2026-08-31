@@ -14,7 +14,7 @@ export default async function CreatorOrdersPage() {
   const { data: orders } = await supabaseAdmin()
     .from("orders")
     .select(
-      "id, created_at, quantity, total_charged, creator_net_amount, currency, payment_status, metadata, products(title, type), customers(email, name), physical_orders(shipment_status, tracking_number, shipping_name, shipping_city, payment_method)"
+      "id, created_at, quantity, total_charged, creator_net_amount, currency, payment_status, metadata, products(title, type), customers(telegram_username, name), physical_orders(shipment_status, tracking_number, shipping_name, shipping_city, payment_method)"
     )
     .eq("creator_id", session.sub)
     .order("created_at", { ascending: false })
@@ -33,7 +33,7 @@ export default async function CreatorOrdersPage() {
         <ul className="mt-4 space-y-3">
           {(orders ?? []).map((o) => {
             const p = o.products as unknown as { title: string; type: string } | null;
-            const cu = o.customers as unknown as { email: string; name: string | null } | null;
+            const cu = o.customers as unknown as { telegram_username: string | null; name: string | null } | null;
             const ship = o.physical_orders as unknown as {
               shipment_status: string; tracking_number: string | null;
               shipping_name: string; shipping_city: string; payment_method: string;
@@ -45,7 +45,7 @@ export default async function CreatorOrdersPage() {
                   <div className="min-w-0">
                     <p className="truncate font-semibold text-ink">{p?.title ?? "—"}</p>
                     <p className="text-xs text-ink-faint">
-                      {cu?.name ?? cu?.email} · {new Date(o.created_at).toLocaleString()}
+                      {cu?.name ?? (cu?.telegram_username ? `@${cu.telegram_username}` : "—")} · {new Date(o.created_at).toLocaleString()}
                     </p>
                     {Boolean(meta.variant) && (
                       <p className="text-xs text-ink-soft">{String(meta.variant)} × {o.quantity}</p>

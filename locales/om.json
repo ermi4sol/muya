@@ -353,7 +353,14 @@
     "remove": "Balleessi",
     "soldOut": "Gurgurame dhume",
     "inStock": "{n} kuusaa keessa",
-    "deliveredViaTelegram": "Telegram irratti ni dhiyaata"
+    "deliveredViaTelegram": "Telegram irratti ni dhiyaata",
+    "telegramConnected": "Telegram walqabsiifameera — ergaan chaattii keessan keessatti dhufa",
+    "telegramToOrder": "Ajaja gochuuf Telegram walqabsiisaa — achitti isiniif ergama.",
+    "telegramRequired": "Mee dursa Telegram walqabsiisaa.",
+    "noPayNoteTg": "Amma homaa hin kaffaltan. Ajaja keessan mirkaneessinee Telegram irratti isiniif erga.",
+    "leadReady": "Kan keessani! Gaditti buufadhaa — iddoon keessanis galmaa'eera.",
+    "leadNote": "Bilisa — erga galchitanii booda battalumatti buufachuu.",
+    "statusTelegram": "Odeeffannoon chaattii Telegram keessan @MuyaOfficialBot irratti dhufa"
   },
   "community": {
     "placeholder": "Waan tokko hawaasa waliin qoodi…",

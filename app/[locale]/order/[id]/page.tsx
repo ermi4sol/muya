@@ -29,7 +29,7 @@ export default async function OrderStatusPage({
     order.payment_status === "paid" && product
       ? product.type === "course"
         ? `/learn/${order.id}`
-        : ["digital_download", "lead_magnet", "membership", "community"].includes(product.type)
+        : ["digital_product", "lead_magnet"].includes(product.type)
           ? `/access/${order.id}`
           : null
       : null;
@@ -77,7 +77,7 @@ export default async function OrderStatusPage({
         <p className="mt-3 text-xs text-ink-faint">
           {t("statusRef")}: {order.id.slice(0, 8).toUpperCase()}
         </p>
-        <p className="mt-1 text-xs text-ink-faint">{t("statusEmailed")}</p>
+        <p className="mt-1 text-xs text-ink-faint">✈️ {t("statusTelegram")}</p>
         {creator && (
           <a
             href={`/${creator.store_slug}`}

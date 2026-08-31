@@ -2,13 +2,15 @@ import { supabaseAdmin } from "@/lib/db/client";
 import { writeAuditLog } from "@/lib/db/identity";
 import { createCalendarEvent } from "@/lib/integrations/google";
 import { createZoomMeeting } from "@/lib/integrations/zoom";
+import { getCommissionRate, splitAmount } from "@/lib/fulfillment/commission";
+import { tgEscape } from "@/lib/telegram/api";
 import {
-  sendOrderApprovedEmail,
-  sendOrderRejectedEmail,
-  sendCreatorSaleEmail,
-} from "@/lib/email/fulfillment";
-
-const COMMISSION_RATE = 0.07;
+  notifyOrderApproved,
+  notifyOrderRejected,
+  notifyCreatorSale,
+  deliverFileViaTelegram,
+} from "@/lib/telegram/notify";
+import { env } from "@/lib/env";
 
 interface OrderFull {
   id: string;
@@ -24,17 +26,32 @@ interface OrderFull {
   payment_status: string;
   metadata: Record<string, unknown>;
   products: {
-    id: string; type: string; title: string; config: Record<string, unknown>;
+    id: string;
+    type: string;
+    title: string;
+    config: Record<string, unknown>;
   };
-  customers: { id: string; email: string; preferred_locale: string | null };
-  creators: { id: string; email: string; display_name: string | null; store_slug: string };
+  customers: {
+    id: string;
+    telegram_user_id: string;
+    telegram_username: string | null;
+    name: string | null;
+    preferred_locale: string | null;
+  };
+  creators: {
+    id: string;
+    telegram_user_id: string;
+    telegram_username: string | null;
+    display_name: string | null;
+    store_slug: string;
+  };
 }
 
 async function loadOrder(orderId: string): Promise<OrderFull | null> {
   const { data } = await supabaseAdmin()
     .from("orders")
     .select(
-      "id, creator_id, customer_id, product_id, variant_id, quantity, item_amount, shipping_fee, total_charged, currency, payment_status, metadata, products(id, type, title, config), customers(id, email, preferred_locale), creators(id, email, display_name, store_slug)"
+      "id, creator_id, customer_id, product_id, variant_id, quantity, item_amount, shipping_fee, total_charged, currency, payment_status, metadata, products(id, type, title, config), customers(id, telegram_user_id, telegram_username, name, preferred_locale), creators(id, telegram_user_id, telegram_username, display_name, store_slug)"
     )
     .eq("id", orderId)
     .maybeSingle();
@@ -43,18 +60,16 @@ async function loadOrder(orderId: string): Promise<OrderFull | null> {
 
 /**
  * APPROVE: flips a pending order to paid (idempotent — only the first call
- * wins), computes the 7% commission, credits the creator ledger, then runs
- * per-type fulfillment. This same function will be called by the Chapa
- * webhook after launch.
+ * wins), computes commission from platform settings (rate + per-type
+ * exclusions), credits the creator ledger, then runs per-type fulfillment
+ * through the Telegram bot. The Chapa webhook will call this same function
+ * after launch.
  */
 export async function approveOrder(
   orderId: string,
   adminId: string | null
 ): Promise<{ ok: boolean; error?: string }> {
   const db = supabaseAdmin();
-
-  const commissionOf = (total: number) =>
-    Math.round(total * COMMISSION_RATE * 100) / 100;
 
   // Atomic claim: pending → paid
   const { data: claimed } = await db
@@ -71,16 +86,17 @@ export async function approveOrder(
     return { ok: false, error: "not_pending" };
   }
 
+  const order = await loadOrder(orderId);
+  if (!order) return { ok: false, error: "load_failed" };
+
+  // Commission: admin-set rate, per-type exclusions
   const total = Number(claimed[0].total_charged);
-  const commission = commissionOf(total);
-  const net = Math.round((total - commission) * 100) / 100;
+  const rate = await getCommissionRate(order.products.type);
+  const { commission, net } = splitAmount(total, rate);
   await db
     .from("orders")
     .update({ commission_amount: commission, creator_net_amount: net })
     .eq("id", orderId);
-
-  const order = await loadOrder(orderId);
-  if (!order) return { ok: false, error: "load_failed" };
 
   // Ledger credit (skip zero-value orders)
   if (net > 0) {
@@ -110,7 +126,7 @@ export async function approveOrder(
   }
 
   try {
-    await fulfillOrder(order);
+    await fulfillOrder({ ...order, payment_status: "paid" });
   } catch (e) {
     // Never lose a paid order: park it for the retry sweep
     console.error("fulfillment failed:", e instanceof Error ? e.message : e);
@@ -154,19 +170,26 @@ export async function rejectOrder(
   });
   const order = await loadOrder(orderId);
   if (order) {
-    await sendOrderRejectedEmail({
-      to: order.customers.email,
-      productTitle: order.products.title,
-      reason,
-      locale: (order.metadata?.locale as string) ?? order.customers.preferred_locale ?? "en",
-    });
+    try {
+      await notifyOrderRejected({
+        telegramUserId: order.customers.telegram_user_id,
+        productTitle: order.products.title,
+        creatorName: order.creators.display_name ?? order.creators.store_slug,
+        orderId: order.id,
+        reason,
+      });
+    } catch (e) {
+      console.error("reject notify failed:", e);
+    }
   }
   return { ok: true };
 }
 
 /**
- * FULFILL: idempotent per-type delivery. Ensures the entitlement exists,
- * performs type-specific work, and emails customer + creator.
+ * FULFILL: idempotent per-type delivery, entirely through the Telegram bot.
+ * Ensures the entitlement exists, performs type-specific work (files,
+ * bookings, Zoom), then messages customer + creator. Every message names
+ * the creator.
  */
 export async function fulfillOrder(orderOrId: OrderFull | string): Promise<void> {
   const db = supabaseAdmin();
@@ -174,10 +197,14 @@ export async function fulfillOrder(orderOrId: OrderFull | string): Promise<void>
     typeof orderOrId === "string" ? await loadOrder(orderOrId) : orderOrId;
   if (!order || order.payment_status !== "paid") return;
 
-  const locale =
-    (order.metadata?.locale as string) ?? order.customers.preferred_locale ?? "en";
   const type = order.products.type;
   const config = order.products.config ?? {};
+  const creatorName = order.creators.display_name ?? order.creators.store_slug;
+  const customerName =
+    order.customers.name ??
+    (order.customers.telegram_username
+      ? `@${order.customers.telegram_username}`
+      : "there");
 
   // Entitlement (idempotent per order)
   const { data: existingEnt } = await db
@@ -199,41 +226,21 @@ export async function fulfillOrder(orderOrId: OrderFull | string): Promise<void>
     entitlementId = ent?.id;
   }
 
-  let accessPath: string | null = null;
-  let customerExtra = "";
+  let extraHtml = "";
   let creatorExtra = "";
+  let buttons: { text: string; url: string }[][] | undefined;
+  let sendFileAfter = false;
 
   switch (type) {
-    case "digital_download":
+    case "digital_product":
     case "lead_magnet":
-      accessPath = `/access/${order.id}`;
+      buttons = [[{ text: "📥 Download", url: `${env.appUrl()}/access/${order.id}` }]];
+      sendFileAfter = Boolean((config.file as { path?: string } | null)?.path);
       break;
 
     case "course":
-      accessPath = `/learn/${order.id}`;
+      buttons = [[{ text: "🎓 Open the course", url: `${env.appUrl()}/learn/${order.id}` }]];
       break;
-
-    case "membership":
-      accessPath = `/access/${order.id}`;
-      break;
-
-    case "community": {
-      const { data: community } = await db
-        .from("communities")
-        .select("id")
-        .eq("product_id", order.product_id)
-        .maybeSingle();
-      if (community) {
-        await db
-          .from("community_members")
-          .upsert(
-            { community_id: community.id, customer_id: order.customer_id },
-            { onConflict: "community_id,customer_id", ignoreDuplicates: true }
-          );
-      }
-      accessPath = `/access/${order.id}`;
-      break;
-    }
 
     case "coaching_call": {
       const slot = order.metadata?.slot as string | undefined;
@@ -247,16 +254,13 @@ export async function fulfillOrder(orderOrId: OrderFull | string): Promise<void>
 
         let meetLink: string | null = existing?.meeting_link ?? null;
         if (!existing) {
-          // Try to create a Google Calendar event with a Meet link
-          // (works when the creator has connected their calendar)
           let eventId: string | null = null;
           try {
             const event = await createCalendarEvent(order.creator_id, {
               summary: `${order.products.title} — MUYA booking`,
-              description: `Booked by ${order.customers.email} via MUYA.`,
+              description: `Booked by ${customerName} (Telegram) via MUYA.`,
               startIso: slot,
               durationMinutes: duration,
-              attendeeEmail: order.customers.email,
             });
             if (event) {
               eventId = event.eventId;
@@ -275,15 +279,23 @@ export async function fulfillOrder(orderOrId: OrderFull | string): Promise<void>
           });
         }
 
-        const when = new Date(slot).toLocaleString(locale === "am" ? "am-ET" : "en-GB", {
-          dateStyle: "full", timeStyle: "short",
+        const when = new Date(slot).toLocaleString("en-GB", {
+          dateStyle: "full",
+          timeStyle: "short",
         });
-        customerExtra = meetLink
-          ? `<p>🗓️ ${when}</p><p>🎥 Join here: <a href="${meetLink}">${meetLink}</a></p>`
-          : `<p>🗓️ ${when}</p><p style="color:#8a9693;font-size:13px;">The meeting link will be shared by your coach before the session.</p>`;
-        creatorExtra = meetLink
-          ? `<p>🗓️ New booking: <strong>${when}</strong> — added to your Google Calendar with a Meet link (${meetLink}).</p>`
-          : `<p>🗓️ New booking: <strong>${when}</strong> — add it to your calendar. (Automatic Google Calendar events + Meet links arrive when you connect your calendar in Settings → Integrations.)</p>`;
+        extraHtml =
+          `🗓️ ${tgEscape(when)}` +
+          (meetLink
+            ? `\n🎥 Join link below.`
+            : `\nYour coach will share the meeting link before the session.`);
+        buttons = meetLink
+          ? [[{ text: "🎥 Join the session", url: meetLink }]]
+          : undefined;
+        creatorExtra =
+          `🗓️ New booking: <b>${tgEscape(when)}</b>` +
+          (meetLink
+            ? ` — added to your Google Calendar with a Meet link.`
+            : ` — add it to your calendar. (Connect Google Calendar in Settings → Integrations for automatic events + Meet links.)`);
       }
       break;
     }
@@ -330,16 +342,18 @@ export async function fulfillOrder(orderOrId: OrderFull | string): Promise<void>
           });
         }
         const startsAt = config.starts_at
-          ? new Date(config.starts_at as string).toLocaleString(undefined, {
-              dateStyle: "full", timeStyle: "short",
+          ? new Date(config.starts_at as string).toLocaleString("en-GB", {
+              dateStyle: "full",
+              timeStyle: "short",
             })
           : null;
-        customerExtra = [
-          startsAt ? `<p>🔴 Live on <strong>${startsAt}</strong>.</p>` : "",
-          joinUrl
-            ? `<p>🎥 Your join link: <a href="${joinUrl}">${joinUrl}</a></p>`
-            : `<p style="color:#8a9693;font-size:13px;">Your join link will be emailed before the event.</p>`,
-        ].join("");
+        extraHtml = startsAt ? `🔴 Live on <b>${tgEscape(startsAt)}</b>` : "";
+        buttons = joinUrl
+          ? [[{ text: "🎥 Join the webinar", url: joinUrl }]]
+          : undefined;
+        if (!joinUrl) {
+          extraHtml += `\nYour join link will arrive here before the event.`;
+        }
       }
       break;
     }
@@ -347,8 +361,12 @@ export async function fulfillOrder(orderOrId: OrderFull | string): Promise<void>
     case "custom_product": {
       const answer = (order.metadata?.custom_answer as string) ?? "";
       const days = config.turnaround_days ?? "—";
-      customerExtra = `<p>⏱️ Delivery within <strong>${days} days</strong>.</p>`;
-      creatorExtra = `<p><strong>New custom order to deliver (within ${days} days):</strong></p><p style="background:#faf8f4;padding:10px;border-radius:8px;">"${answer}"</p><p>Reply to the buyer at ${order.customers.email}.</p>`;
+      extraHtml = `⏱️ <b>${tgEscape(creatorName)}</b> is on it — delivery within <b>${tgEscape(String(days))} days</b>. Updates arrive here.`;
+      creatorExtra =
+        `✨ <b>New custom order to deliver</b> (within ${tgEscape(String(days))} days)` +
+        (answer ? `\n\n"${tgEscape(answer)}"` : "") +
+        `\n\nBuyer: ${tgEscape(customerName)}${order.customers.telegram_username ? ` (@${tgEscape(order.customers.telegram_username)})` : ""} — message them on Telegram to deliver.`;
+      buttons = [[{ text: "📦 Order status", url: `${env.appUrl()}/order/${order.id}` }]];
       break;
     }
 
@@ -363,7 +381,9 @@ export async function fulfillOrder(orderOrId: OrderFull | string): Promise<void>
         if (variant) {
           await db
             .from("product_variants")
-            .update({ stock_count: Math.max(0, variant.stock_count - order.quantity) })
+            .update({
+              stock_count: Math.max(0, variant.stock_count - order.quantity),
+            })
             .eq("id", order.variant_id);
           await db
             .from("orders")
@@ -372,35 +392,78 @@ export async function fulfillOrder(orderOrId: OrderFull | string): Promise<void>
         }
       }
       const cod = Boolean(order.metadata?.cod);
-      customerExtra = `<p>📦 Your order will be shipped soon — you'll get another email with tracking details.${cod ? " You chose <strong>cash on delivery</strong> — have the amount ready." : ""}</p>`;
-      creatorExtra = `<p><strong>Ship this order:</strong> ${order.metadata?.variant ?? ""} × ${order.quantity}${cod ? " · CASH ON DELIVERY" : ""}. Open your dashboard → Orders to mark it shipped with a tracking number.</p>`;
+      extraHtml =
+        `📦 Your order will be shipped soon — tracking updates arrive right here.` +
+        (cod ? `\n💵 You chose <b>cash on delivery</b> — have the amount ready.` : "");
+      creatorExtra =
+        `📦 <b>Ship this order:</b> ${tgEscape(String(order.metadata?.variant ?? ""))} × ${order.quantity}` +
+        (cod ? ` · <b>CASH ON DELIVERY</b>` : "") +
+        `\nOpen your dashboard → Orders to mark it shipped with a tracking number.`;
+      buttons = [[{ text: "📦 Order status", url: `${env.appUrl()}/order/${order.id}` }]];
       break;
     }
   }
 
-  const net = order.total_charged
-    ? `${(Number(order.total_charged) * (1 - COMMISSION_RATE)).toLocaleString(undefined, { maximumFractionDigits: 2 })} ${order.currency}`
-    : `0 ${order.currency}`;
+  // Buyer answers to the creator's custom checkout fields → include for the creator
+  const fieldAnswers = order.metadata?.custom_fields as
+    | Record<string, string>
+    | undefined;
+  if (fieldAnswers && Object.keys(fieldAnswers).length > 0) {
+    creatorExtra +=
+      `\n\n📋 <b>Buyer answers:</b>\n` +
+      Object.entries(fieldAnswers)
+        .map(([k, v]) => `• ${tgEscape(k)}: ${tgEscape(String(v))}`)
+        .join("\n");
+  }
 
-  await Promise.allSettled([
-    sendOrderApprovedEmail({
-      to: order.customers.email,
+  const rate = await getCommissionRate(type);
+  const netLabel = `${splitAmount(Number(order.total_charged), rate).net.toLocaleString(undefined, { maximumFractionDigits: 2 })} ${order.currency}`;
+
+  const results = await Promise.allSettled([
+    notifyOrderApproved({
+      telegramUserId: order.customers.telegram_user_id,
       productTitle: order.products.title,
+      creatorName,
       orderId: order.id,
-      accessPath,
-      locale,
-      extraHtml: customerExtra,
+      customerName,
+      extraHtml,
+      buttons,
+      template: (config.tg_confirmation_template as string) ?? null,
     }),
     Number(order.total_charged) > 0 || creatorExtra
-      ? sendCreatorSaleEmail({
-          to: order.creators.email,
+      ? notifyCreatorSale({
+          creatorTelegramId: order.creators.telegram_user_id,
           productTitle: order.products.title,
-          netAmount: net,
-          customerEmail: order.customers.email,
-          extraHtml: creatorExtra,
+          netLabel,
+          customerLabel:
+            customerName +
+            (order.customers.telegram_username
+              ? ` (@${order.customers.telegram_username})`
+              : ""),
+          extraHtml: creatorExtra || undefined,
         })
       : Promise.resolve(),
   ]);
+
+  // The digital file itself, protected from forwarding
+  if (sendFileAfter) {
+    const file = config.file as { path?: string; name?: string } | null;
+    if (file?.path) {
+      await deliverFileViaTelegram({
+        telegramUserId: order.customers.telegram_user_id,
+        filePath: file.path,
+        fileName: file.name,
+        caption: `📥 ${tgEscape(order.products.title)} — from ${tgEscape(creatorName)}`,
+      });
+    }
+  }
+
+  // Surface customer-message failures to the retry sweep (creator ping is best-effort)
+  if (results[0].status === "rejected") {
+    throw new Error(
+      `customer notify failed: ${String((results[0] as PromiseRejectedResult).reason)}`
+    );
+  }
 }
 
 /** Access check shared by the download/course/access pages. */

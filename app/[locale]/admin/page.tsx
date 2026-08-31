@@ -11,7 +11,7 @@ async function loadOrders(status: "pending" | "decided"): Promise<QueueOrder[]> 
   let query = db
     .from("orders")
     .select(
-      "id, created_at, quantity, item_amount, shipping_fee, total_charged, currency, payment_status, metadata, products(title, type), creators(display_name, store_slug, email), customers(email, name), physical_orders(shipping_name, shipping_phone, shipping_address, shipping_city, shipping_notes, payment_method)"
+      "id, created_at, quantity, item_amount, shipping_fee, total_charged, currency, payment_status, metadata, products(title, type), creators(display_name, store_slug, telegram_username), customers(telegram_username, name), physical_orders(shipping_name, shipping_phone, shipping_address, shipping_city, shipping_notes, payment_method)"
     )
     .order("created_at", { ascending: status === "pending" });
   query =
@@ -22,10 +22,8 @@ async function loadOrders(status: "pending" | "decided"): Promise<QueueOrder[]> 
   const { data } = await query;
   return (data ?? []).map((o) => {
     const p = o.products as unknown as { title: string; type: string } | null;
-    const cr = o.creators as unknown as {
-      display_name: string | null; store_slug: string; email: string;
-    } | null;
-    const cu = o.customers as unknown as { email: string; name: string | null } | null;
+    const cr = o.creators as unknown as { display_name: string | null; store_slug: string; telegram_username: string | null } | null;
+    const cu = o.customers as unknown as { telegram_username: string | null; name: string | null } | null;
     const ship = o.physical_orders as unknown as QueueOrder["shipping"] | null;
     return {
       id: o.id,
@@ -40,8 +38,8 @@ async function loadOrders(status: "pending" | "decided"): Promise<QueueOrder[]> 
       productTitle: p?.title ?? "—",
       productType: p?.type ?? "—",
       creatorName: cr?.display_name ?? cr?.store_slug ?? "—",
-      creatorEmail: cr?.email ?? "—",
-      customerEmail: cu?.email ?? "—",
+      creatorEmail: cr?.telegram_username ? `@${cr.telegram_username}` : "—",
+      customerEmail: cu?.telegram_username ? `@${cu.telegram_username}` : (cu?.name ?? "—"),
       customerName: cu?.name ?? null,
       shipping: ship ?? null,
     };
