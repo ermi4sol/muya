@@ -164,16 +164,20 @@ function StoreCard({
 
   let card: React.ReactNode;
   if (p.card_style === "button") {
+    // A solid button-look card: same height rhythm as the callout cards
     card = (
       <div
-        className="rounded-2xl p-4 text-center shadow-card transition hover:scale-[1.01]"
+        className="flex min-h-[72px] flex-col items-center justify-center rounded-2xl px-4 py-3.5 text-center shadow-card transition hover:scale-[1.01]"
         style={{ background: th.button }}
       >
-        <p className="font-bold" style={{ color: th.buttonText }}>
+        <p className="w-full truncate font-bold" style={{ color: th.buttonText }}>
           {p.title}
         </p>
         {p.subtitle && (
-          <p className="mt-0.5 text-xs opacity-80" style={{ color: th.buttonText }}>
+          <p
+            className="mt-0.5 w-full truncate text-xs opacity-80"
+            style={{ color: th.buttonText }}
+          >
             {p.subtitle}
           </p>
         )}
@@ -185,14 +189,24 @@ function StoreCard({
         className="overflow-hidden rounded-2xl shadow-card transition hover:scale-[1.01]"
         style={{ background: th.card }}
       >
-        <div className="flex aspect-square max-h-72 w-full items-center justify-center text-6xl">
-          {p.thumbnail_url ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={p.thumbnail_url} alt="" className="h-full w-full object-cover" />
-          ) : (
-            icon
-          )}
-        </div>
+        {p.thumbnail_url ? (
+          <div className="max-h-64 w-full overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={p.thumbnail_url}
+              alt=""
+              className="aspect-square max-h-64 w-full object-cover"
+            />
+          </div>
+        ) : (
+          // No image yet → compact icon band instead of a big empty square
+          <div
+            className="flex h-24 w-full items-center justify-center border-b text-4xl"
+            style={{ borderColor: `${th.accent}33`, background: `${th.accent}14` }}
+          >
+            {icon}
+          </div>
+        )}
         <div className="p-4">
           <p className="font-semibold" style={{ color: th.ink }}>
             {p.title}

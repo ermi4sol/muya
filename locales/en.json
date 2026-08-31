@@ -387,7 +387,7 @@
     "accessGeneric": "Your access is confirmed — check your email for the details.",
     "openCommunity": "Open the community",
     "shopCardTitle": "Shop",
-    "shopCardSub": "{n} products to browse",
+    "shopCardSub": "{n, plural, one {# product} other {# products}} to browse",
     "browse": "Browse",
     "from": "From",
     "shopEmpty": "Nothing in the shop yet.",

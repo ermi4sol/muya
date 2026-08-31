@@ -598,14 +598,18 @@ function LivePreview({
             )}
             {cardStyle === "preview" && (
               <div className="overflow-hidden rounded-card border border-line bg-surface shadow-card">
-                <div className="flex aspect-square w-full items-center justify-center bg-primary-50 text-5xl">
-                  {thumbnailUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={thumbnailUrl} alt="" className="h-full w-full object-cover" />
-                  ) : (
-                    TYPE_META[type].icon
-                  )}
-                </div>
+                {thumbnailUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={thumbnailUrl}
+                    alt=""
+                    className="aspect-square max-h-52 w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-20 w-full items-center justify-center border-b border-line bg-primary-50 text-3xl">
+                    {TYPE_META[type].icon}
+                  </div>
+                )}
                 <div className="p-3.5">
                   <p className="font-semibold text-ink">{showTitle}</p>
                   {subtitle && <p className="mt-0.5 text-xs text-ink-faint">{subtitle}</p>}
