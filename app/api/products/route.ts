@@ -6,6 +6,7 @@ import {
   insertPhysical,
   replaceCustomFields,
 } from "@/lib/db/products";
+import { notifyAdminsTelegram } from "@/lib/telegram/admin";
 
 export async function POST(req: Request) {
   const session = await getUserSession();
@@ -62,6 +63,12 @@ export async function POST(req: Request) {
   }
   if (b.type === "physical" && b.attributes?.length) {
     await insertPhysical(product.id, b.attributes, b.variants ?? []);
+  }
+
+  if (b.status === "active") {
+    await notifyAdminsTelegram(
+      `🆕 <b>New product published</b>\n${b.title} (${b.type})`
+    );
   }
 
   return NextResponse.json({ id: product.id });

@@ -14,12 +14,12 @@ export default function LandingPage({
   return <Landing />;
 }
 
-const PRODUCT_ICONS = ["📥", "🎓", "🗓️", "🎥", "⭐", "🎁", "✨", "🔗", "💬", "🛍️"];
+const PRODUCT_ICONS = ["📥", "🎁", "🗓️", "🎓", "🎥", "🤝", "🔗", "🛍️", "✨"];
 
 function Landing() {
   const t = useTranslations();
   const steps = [1, 2, 3, 4] as const;
-  const products = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const;
+  const products = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
 
   return (
     <div className="min-h-dvh bg-bg">
@@ -83,7 +83,7 @@ function Landing() {
                   ["🍲", "Injera Masterclass", "350 ETB"],
                   ["📥", "Recipe eBook", "120 ETB"],
                   ["🗓️", "1:1 Cooking Call", "500 ETB"],
-                  ["💬", "Foodies Community", "Free"],
+                  ["🎁", "Free Spice Guide", "Free"],
                 ].map(([icon, title, price]) => (
                   <div
                     key={title}
@@ -135,7 +135,7 @@ function Landing() {
           </div>
         </section>
 
-        {/* ===== Ten product types ===== */}
+        {/* ===== Nine product types ===== */}
         <section className="mx-auto max-w-5xl px-4 py-14">
           <h2 className="text-center text-2xl font-bold text-ink sm:text-3xl">
             {t("landing2.productsTitle")}
@@ -143,7 +143,7 @@ function Landing() {
           <p className="mt-2 text-center text-ink-soft">
             {t("landing2.productsSub")}
           </p>
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
             {products.map((n) => (
               <div
                 key={n}

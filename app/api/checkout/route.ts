@@ -6,6 +6,8 @@ import { getUserSession } from "@/lib/auth/session";
 import { rateLimit, clientIp } from "@/lib/auth/rate-limit";
 import { sendAdminNewOrderAlert } from "@/lib/email/orders";
 import { notifyOrderReceived } from "@/lib/telegram/notify";
+import { notifyAdminsTelegram } from "@/lib/telegram/admin";
+import { env } from "@/lib/env";
 import { approveOrder } from "@/lib/fulfillment";
 import { LINK_OUT_TYPES } from "@/lib/product-types";
 import type { ProductType } from "@/lib/product-types";
@@ -240,7 +242,11 @@ async function handle(req: Request) {
           details: variantSummary
             ? `Variant: ${variantSummary} × ${quantity}`
             : undefined,
-        }).catch((e) => console.error("admin alert failed:", e))
+        }).catch((e) => console.error("admin alert failed:", e)),
+        notifyAdminsTelegram(
+          `🛎️ <b>New order pending</b>\n${product.title} · ${totalLabel}\nCreator: ${creatorName}`,
+          [[{ text: "Open orders queue", url: `${env.appUrl()}/admin/orders` }]]
+        )
       );
     }
   }

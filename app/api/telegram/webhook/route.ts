@@ -83,6 +83,14 @@ async function handleMessage(
     return;
   }
 
+  if (lower === "/id") {
+    await sendTelegramMessage(
+      chatId,
+      `Your Telegram ID: <code>${telegramId}</code>`
+    );
+    return;
+  }
+
   await sendTelegramMessage(
     chatId,
     `I'm the <b>MUYA</b> bot 🛍\n\n` +

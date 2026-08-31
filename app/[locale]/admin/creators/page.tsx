@@ -77,7 +77,7 @@ export default async function AdminCreatorsPage() {
                   >
                     {c.status}
                   </span>
-                  <CreatorActions creatorId={c.id} status={c.status} />
+                  <CreatorActions creatorId={c.id} status={c.status} tier={tier} />
                 </div>
               </div>
             );

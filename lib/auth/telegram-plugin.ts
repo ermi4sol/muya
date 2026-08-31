@@ -4,6 +4,7 @@ import { setSessionCookie } from "better-auth/cookies";
 import type { BetterAuthPlugin } from "better-auth";
 import { verifyTelegramAuth } from "./telegram-verify";
 import { provisionTelegramIdentity } from "./provision";
+import { rateLimit } from "./rate-limit";
 
 /** Deterministic surrogate email for a Telegram identity (Better Auth requires an email). */
 export function telegramSurrogateEmail(telegramId: string) {
@@ -41,6 +42,16 @@ export const telegramAuth = () => {
         { method: "POST", body: bodySchema },
         async (ctx) => {
           const { telegram, intent } = ctx.body;
+
+          // Cheap DB-backed rate limit per IP (shared across serverless instances)
+          const ip =
+            ctx.headers?.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+          const allowed = await rateLimit(`tg-signin:${ip}`, 30, 60 * 60);
+          if (!allowed) {
+            throw new APIError("TOO_MANY_REQUESTS", {
+              message: "Too many sign-in attempts — try again later.",
+            });
+          }
 
           const verdict = verifyTelegramAuth(telegram);
           if (!verdict.ok) {

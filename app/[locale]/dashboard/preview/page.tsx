@@ -6,9 +6,9 @@ import { themeOf } from "@/lib/themes";
 import { Link } from "@/i18n/navigation";
 
 const TYPE_ICONS: Record<string, string> = {
-  digital_download: "📥", course: "🎓", coaching_call: "🗓️", webinar: "🎥",
-  membership: "⭐", lead_magnet: "🎁", custom_product: "✨", external_link: "🔗",
-  community: "💬", physical: "🛍️",
+  digital_product: "📥", lead_magnet: "🎁", coaching_call: "🗓️", course: "🎓",
+  webinar: "🎥", affiliate_link: "🤝", url_media: "🔗", physical: "🛍️",
+  custom_product: "✨",
 };
 
 export default async function PreviewPage() {

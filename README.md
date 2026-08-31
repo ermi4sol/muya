@@ -2,58 +2,54 @@
 
 **Sell anything. Get paid. One link.**
 
-MUYA is a creator-commerce platform for Ethiopian creators — one storefront link that sells ten product types (digital downloads, courses, coaching calls, webinars, memberships, lead magnets, custom products, external links, communities, and physical goods), fully multilingual (English, Amharic, Afaan Oromoo, Tigrinya, Somali), with customers buying through passwordless email access.
+MUYA is a creator-commerce platform for Ethiopian creators — one storefront link that sells nine product types (digital products, lead magnets, coaching calls, courses, webinars, affiliate links, links/media, physical goods, and custom products), fully multilingual (English, Amharic, Afaan Oromoo, Tigrinya, Somali). **v2 is Telegram-native**: customers and creators sign in with Telegram, and every delivery and notification arrives through @MuyaOfficialBot.
 
 **Live:** https://mymuya.netlify.app
 
-## How it works (current launch model)
+## How it works (launch model)
 
-- Customers place orders with **no online payment** (order-request model): checkout → order shows *pending* → the MUYA admin reviews the full order details and **approves or rejects** it → both customer and creator are notified by email, and approved customers receive their product automatically.
-- MUYA computes a **7% commission** per sale into a creator ledger; creators request payouts (bank/telebirr) which admins process.
-- **All features are currently free for every creator.** The three-tier system (Free / Growth / Business) exists in the platform config and will be activated later.
-- Chapa online payments and Cloudflare R2 storage are planned post-launch integrations (guides in `/docs` when delivered).
+- Customers place orders with **no online payment** (order-request model): checkout with Telegram identity → order shows *pending* → the MUYA admin reviews and **approves or rejects** → the bot notifies both sides and delivers the product (files sent with forwarding protection, Meet/Zoom links, shipping updates).
+- Commission per sale is **admin-configurable** (default 7%, with per-type exclusions) and credited to a creator ledger; creators request payouts (bank/telebirr) which the admin processes.
+- **All features are currently free for every creator.** The three-tier system exists underneath for later activation.
+- Chapa online payments and Cloudflare R2 storage are planned post-launch (guides in `/docs`).
 
 ## Tech stack
 
 | Role | Service |
 |---|---|
 | Frontend + serverless backend | Next.js (App Router) on Netlify |
-| Database / Auth / Storage / Realtime | Supabase (Postgres) |
-| Transactional email | Resend |
-| Calendar (coaching calls) | Google Calendar API (per-creator OAuth) |
-| Video sessions (webinars) | Zoom API (Server-to-Server OAuth) |
+| Database / Storage | Supabase (Postgres) |
+| Identity | Better Auth — Telegram Login Widget (creators/customers), email+password+TOTP (admin) |
+| Messaging & delivery | Telegram Bot API (@MuyaOfficialBot), protect_content |
+| Transactional email | Resend (admin alerts only) |
+| Calendar (coaching) | Google Calendar API (per-creator OAuth, Meet links) |
+| Video (webinars) | Zoom API (Server-to-Server OAuth) |
 | Internationalization | next-intl — `en`, `am`, `om`, `ti`, `so` |
 
-## Development progress
+## v2 development (the Telegram rework)
 
 | Phase | Scope | Status |
 |---|---|---|
-| 0 | Setup: Netlify, Supabase, GitHub, Resend, Google Calendar API, Zoom API, env vars | ✅ Done — 2026-08-09 |
-| 1 | Foundations: Next.js scaffold, MUYA design system, i18n (5 locales), repo structure | ✅ Done — 2026-08-09 |
-| 2 | Database: 26-table schema, indexes, RLS lockdown, seed (see [docs/DATABASE-STRUCTURE.md](docs/DATABASE-STRUCTURE.md)) | ✅ Done — 2026-08-09 |
-| 3 | Authentication: magic links (creators/customers), admin password + TOTP MFA | ✅ Done — 2026-08-09 |
-| 4 | Landing page (full marketing site) | ✅ Done — 2026-08-09 |
-| 5 | Creator dashboard core + store editor | ✅ Done — 2026-08-09 |
-| 6 | Product builders (all ten types) | ✅ Done — 2026-08-09 |
-| 7 | Storefront + checkout (order-request model) | ✅ Done — 2026-08-09 |
-| 8+8b | Order approval + fulfillment + Google Calendar & Zoom automation | ✅ Done — 2026-08-10 |
-| 9 | Community: posts, likes, comments, moderation | ✅ Done — 2026-08-10 |
-| 10 | Money: income tab, payout requests, refunds | ✅ Done — 2026-08-10 |
-| 11 | Admin panel: metrics, creators, payouts, ledger+CSV, safety, lookup | ✅ Done — 2026-08-10 |
-| 12 | Analytics, background jobs, security hardening | ✅ Done — 2026-08-10 |
-| 13 | Hand-off guides: Chapa, R2, tier activation (see /docs) | ✅ Done — 2026-08-10 |
+| R0 | Setup: connectors, @MuyaOfficialBot, env | ✅ 2026-08-31 |
+| R1 | v2 schema rebuild, Better Auth, Telegram identity + bot webhook | ✅ 2026-08-31 |
+| R2 | Product engine v2: 9 types, three-tab builder with live preview | ✅ 2026-08-31 |
+| R3 | Storefront v2: card styles, no list prices, Shop hub + cart | ✅ 2026-08-31 |
+| R4 | Checkout (Telegram identity, cart groups), commission engine, bot fulfillment | ✅ 2026-08-31 |
+| R5 | PC-first creator dashboard (live preview, Shop/Income/Appointments/Settings) | ✅ 2026-08-31 |
+| R6 | Growth: Analytics, Audience, Referrals, Funnels, Telegram Flows | ✅ 2026-08-31 |
+| R7 | Admin v2 (Dashboard-first, commission controls, TG alerts), hardening, docs | ✅ 2026-08-31 |
 
-Full plan: [docs/MAIN-DEVELOPMENT-PLAN.md](docs/MAIN-DEVELOPMENT-PLAN.md) · Setup guide: [docs/SETUP-AND-DEPLOYMENT-GUIDE.md](docs/SETUP-AND-DEPLOYMENT-GUIDE.md)
+Plan: [docs/MUYA-V2-PLAN.md](docs/MUYA-V2-PLAN.md) · Database: [docs/DATABASE-STRUCTURE.md](docs/DATABASE-STRUCTURE.md) · Testing: [docs/TESTING-CHECKLIST-V2.md](docs/TESTING-CHECKLIST-V2.md)
 
 ## Repository structure
 
 ```
-/app                 → Next.js App Router routes ([locale]/ marketing, auth, storefront, dashboard, admin)
-/components          → shared UI components (MUYA design system)
-/lib                 → server logic: db, auth, payments, integrations, fulfillment, queue, i18n
+/app                 → Next.js App Router routes ([locale]/ marketing, auth, storefront, shop/cart, dashboard, admin)
+/components          → shared UI (MUYA design system, storefront, dashboard, admin)
+/lib                 → server logic: auth (Better Auth + Telegram), db, fulfillment, commission, telegram, integrations
 /locales             → translation files (en, am, om, ti, so)
 /supabase/migrations → versioned SQL migrations (applied to the live project)
-/docs                → plans, guides, database documentation
+/docs                → plans, guides, database documentation, testing checklists
 /i18n                → next-intl routing/request configuration
 ```
 
@@ -61,8 +57,8 @@ Full plan: [docs/MAIN-DEVELOPMENT-PLAN.md](docs/MAIN-DEVELOPMENT-PLAN.md) · Set
 
 ```bash
 npm install
-cp .env.example .env.local   # fill in values (see docs/SETUP-AND-DEPLOYMENT-GUIDE.md §6)
+cp .env.example .env.local   # fill in values (see docs/SETUP-AND-DEPLOYMENT-GUIDE.md)
 npm run dev
 ```
 
-Deploys automatically on push to `main`.
+Deploys on push to `main` (commits marked `[skip netlify]` are not built).

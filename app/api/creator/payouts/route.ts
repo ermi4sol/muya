@@ -3,6 +3,8 @@ import { z } from "zod";
 import { getUserSession } from "@/lib/auth/session";
 import { createPayoutRequest } from "@/lib/db/ledger";
 import { sendAdminAlert } from "@/lib/email/orders";
+import { notifyAdminsTelegram } from "@/lib/telegram/admin";
+import { env } from "@/lib/env";
 
 const Body = z.object({
   amount: z.number().positive().max(100000000),
@@ -35,5 +37,9 @@ export async function POST(req: Request) {
     ctaPath: "/admin/payouts",
     ctaLabel: "Open the payout queue",
   });
+  await notifyAdminsTelegram(
+    `💸 <b>Payout request</b> — ${parsed.data.amount.toLocaleString()} ETB (${parsed.data.method})`,
+    [[{ text: "Open payout queue", url: `${env.appUrl()}/admin/payouts` }]]
+  );
   return NextResponse.json({ ok: true });
 }

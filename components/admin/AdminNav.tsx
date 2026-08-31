@@ -1,10 +1,11 @@
 import { Link } from "@/i18n/navigation";
 
 const TABS = [
-  { href: "/admin", label: "Orders" },
-  { href: "/admin/metrics", label: "Dashboard" },
+  { href: "/admin", label: "Dashboard" },
+  { href: "/admin/orders", label: "Orders" },
   { href: "/admin/creators", label: "Creators" },
   { href: "/admin/payouts", label: "Payouts" },
+  { href: "/admin/commission", label: "Commission" },
   { href: "/admin/ledger", label: "Ledger" },
   { href: "/admin/safety", label: "Safety" },
   { href: "/admin/lookup", label: "Lookup" },

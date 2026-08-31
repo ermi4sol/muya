@@ -4,7 +4,10 @@ import { getAdminSession, requireAdminRole } from "@/lib/auth/session";
 import { supabaseAdmin } from "@/lib/db/client";
 import { writeAuditLog } from "@/lib/db/identity";
 
-const Body = z.object({ action: z.enum(["suspend", "reinstate"]) });
+const Body = z.object({
+  action: z.enum(["suspend", "reinstate", "set_tier"]),
+  tier: z.enum(["free", "premium_growth", "premium_business"]).optional(),
+});
 
 export async function POST(
   req: Request,
@@ -19,7 +22,37 @@ export async function POST(
   if (!parsed.success) {
     return NextResponse.json({ error: "invalid_request" }, { status: 400 });
   }
-  const { error } = await supabaseAdmin()
+  const db = supabaseAdmin();
+
+  if (parsed.data.action === "set_tier") {
+    if (!parsed.data.tier) {
+      return NextResponse.json({ error: "invalid_request" }, { status: 400 });
+    }
+    const { data: existing } = await db
+      .from("creator_subscriptions")
+      .select("id")
+      .eq("creator_id", id)
+      .maybeSingle();
+    const { error } = existing
+      ? await db
+          .from("creator_subscriptions")
+          .update({ tier: parsed.data.tier })
+          .eq("id", existing.id)
+      : await db
+          .from("creator_subscriptions")
+          .insert({ creator_id: id, tier: parsed.data.tier });
+    if (error) return NextResponse.json({ error: "failed" }, { status: 500 });
+    await writeAuditLog({
+      admin_user_id: session!.sub,
+      action: "set_creator_tier",
+      target_type: "creator",
+      target_id: id,
+      notes: parsed.data.tier,
+    });
+    return NextResponse.json({ ok: true });
+  }
+
+  const { error } = await db
     .from("creators")
     .update({ status: parsed.data.action === "suspend" ? "suspended" : "active" })
     .eq("id", id);

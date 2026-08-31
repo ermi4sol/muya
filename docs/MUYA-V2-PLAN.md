@@ -21,6 +21,8 @@ digital_product · lead_magnet · coaching_call · course · webinar · affiliat
 
 ---
 
+> **Status 2026-08-31:** R0–R7 all built. Deployed as ONE bulk build (credits-saving mode: every intermediate commit pushed with `[skip netlify]`). Post-deploy: admin bootstrap via /admin/setup, Telegram webhook self-registers via the hourly sweep (or /api/telegram/setup), then testing per docs/TESTING-CHECKLIST-V2.md.
+
 ## R0 — Setup ✅ (complete)
 
 Connectors verified (Supabase "Muya Project", Netlify jemi4jo/mymuya, GitHub), Telegram bot created (@MuyaOfficialBot), token in Netlify + local env. Remaining founder to-do: confirm BotFather `/setdomain` → `mymuya.netlify.app` (required for the Login Widget).
