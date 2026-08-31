@@ -44,6 +44,7 @@ interface OrderFull {
     telegram_username: string | null;
     display_name: string | null;
     store_slug: string;
+    notification_prefs: Record<string, boolean> | null;
   };
 }
 
@@ -51,7 +52,7 @@ async function loadOrder(orderId: string): Promise<OrderFull | null> {
   const { data } = await supabaseAdmin()
     .from("orders")
     .select(
-      "id, creator_id, customer_id, product_id, variant_id, quantity, item_amount, shipping_fee, total_charged, currency, payment_status, metadata, products(id, type, title, config), customers(id, telegram_user_id, telegram_username, name, preferred_locale), creators(id, telegram_user_id, telegram_username, display_name, store_slug)"
+      "id, creator_id, customer_id, product_id, variant_id, quantity, item_amount, shipping_fee, total_charged, currency, payment_status, metadata, products(id, type, title, config), customers(id, telegram_user_id, telegram_username, name, preferred_locale), creators(id, telegram_user_id, telegram_username, display_name, store_slug, notification_prefs)"
     )
     .eq("id", orderId)
     .maybeSingle();
@@ -430,7 +431,8 @@ export async function fulfillOrder(orderOrId: OrderFull | string): Promise<void>
       buttons,
       template: (config.tg_confirmation_template as string) ?? null,
     }),
-    Number(order.total_charged) > 0 || creatorExtra
+    (Number(order.total_charged) > 0 || creatorExtra) &&
+    order.creators.notification_prefs?.sales !== false
       ? notifyCreatorSale({
           creatorTelegramId: order.creators.telegram_user_id,
           productTitle: order.products.title,

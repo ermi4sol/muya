@@ -13,6 +13,8 @@ export interface CreatorFull {
   currency: string;
   preferred_locale: string;
   status: string;
+  payout_details: Record<string, string>;
+  notification_prefs: Record<string, boolean>;
 }
 
 export interface ProductRow {
@@ -38,7 +40,7 @@ export async function getCreator(id: string): Promise<CreatorFull | null> {
   const { data } = await supabaseAdmin()
     .from("creators")
     .select(
-      "id, telegram_user_id, telegram_username, store_slug, display_name, bio, profile_image_url, social_links, theme, currency, preferred_locale, status"
+      "id, telegram_user_id, telegram_username, store_slug, display_name, bio, profile_image_url, social_links, theme, currency, preferred_locale, status, payout_details, notification_prefs"
     )
     .eq("id", id)
     .maybeSingle();

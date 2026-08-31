@@ -17,6 +17,21 @@ const Body = z.object({
   theme: z.object({ preset: z.string().max(30) }).optional(),
   preferred_locale: z.enum(["en", "am", "om", "ti", "so"]).optional(),
   profile_image_url: z.string().url().max(500).optional(),
+  payout_details: z
+    .object({
+      method: z.enum(["bank", "telebirr"]).optional(),
+      account_name: z.string().max(80).optional(),
+      account_number: z.string().max(40).optional(),
+      bank_name: z.string().max(80).optional(),
+    })
+    .optional(),
+  notification_prefs: z
+    .object({
+      sales: z.boolean().optional(),
+      orders: z.boolean().optional(),
+      payouts: z.boolean().optional(),
+    })
+    .optional(),
 });
 
 export async function GET() {
