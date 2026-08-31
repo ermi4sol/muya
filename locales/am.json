@@ -338,7 +338,22 @@
     "memberNote": "አባልነትዎ ንቁ ነው። የአባላት ይዘት እና የማህበረሰብ መዳረሻ በሚቀጥሉት ዝመናዎች ያድጋሉ።",
     "communityNote": "ገብተዋል! የማህበረሰቡ ገጽ በሚቀጥለው ዝመና ይከፈታል — ሲጀምር ኢሜይል ይደርስዎታል።",
     "accessGeneric": "መዳረሻዎ ተረጋግጧል — ለዝርዝሮች ኢሜይልዎን ይመልከቱ።",
-    "openCommunity": "ማህበረሰቡን ክፈት"
+    "openCommunity": "ማህበረሰቡን ክፈት",
+    "shopCardTitle": "መደብር",
+    "shopCardSub": "{n} ምርቶች ይመልከቱ",
+    "browse": "ይመልከቱ",
+    "from": "ከ",
+    "shopEmpty": "በመደብሩ ውስጥ እስካሁን ምንም የለም።",
+    "cart": "ጋሪ",
+    "cartEmpty": "ጋሪዎ ባዶ ነው።",
+    "subtotal": "ንዑስ ድምር",
+    "addToCart": "ወደ ጋሪ ጨምር",
+    "addedToCart": "ታክሏል",
+    "viewCart": "ጋሪ ይመልከቱ",
+    "remove": "አስወግድ",
+    "soldOut": "ተሽጦ አልቋል",
+    "inStock": "{n} በክምችት",
+    "deliveredViaTelegram": "በቴሌግራም ይደርሳል"
   },
   "community": {
     "placeholder": "ከማህበረሰቡ ጋር የሆነ ነገር ያጋሩ…",

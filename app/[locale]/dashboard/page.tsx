@@ -100,7 +100,7 @@ export default async function DashboardHome() {
                     {o.productTitle}
                   </p>
                   <p className="truncate text-xs text-ink-faint">
-                    {o.customerEmail}
+                    {o.customerName}
                   </p>
                 </div>
                 <div className="text-right">

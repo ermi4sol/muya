@@ -338,7 +338,22 @@
     "memberNote": "ኣባልነትካ ንጡፍ እዩ። ናይ ኣባላት ትሕዝቶ ኣብ ዝመጽእ ምሕዳሳት ይውስኽ።",
     "communityNote": "ኣቲኻ ኣለኻ! ገጽ ማሕበረሰብ ኣብ ዝመጽእ ምሕዳስ ይኽፈት — ምስ ጀመረ ኢመይል ክመጸካ እዩ።",
     "accessGeneric": "መእተዊኻ ተረጋጊጹ — ንዝርዝር ኢመይልካ ርአ።",
-    "openCommunity": "ማሕበረሰብ ክፈት"
+    "openCommunity": "ማሕበረሰብ ክፈት",
+    "shopCardTitle": "ድኳን",
+    "shopCardSub": "{n} ፍርያት ርኣዩ",
+    "browse": "ርኣዩ",
+    "from": "ካብ",
+    "shopEmpty": "ኣብ ድኳን ገና ዋላ ሓደ የለን።",
+    "cart": "ዓረብያ",
+    "cartEmpty": "ዓረብያኹም ባዶ እያ።",
+    "subtotal": "ንኡስ ድምር",
+    "addToCart": "ናብ ዓረብያ ወስኽ",
+    "addedToCart": "ተወሲኹ",
+    "viewCart": "ዓረብያ ርኣዩ",
+    "remove": "ኣወግድ",
+    "soldOut": "ተሸይጡ ወዲኡ",
+    "inStock": "{n} ኣብ ክምችት",
+    "deliveredViaTelegram": "ብቴሌግራም ይበጽሕ"
   },
   "community": {
     "placeholder": "ምስ ማሕበረሰብ ገለ ኣካፍል…",

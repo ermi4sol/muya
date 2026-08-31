@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getPublicProduct } from "@/lib/db/storefront";
 import { themeOf } from "@/lib/themes";
@@ -7,6 +7,7 @@ import { BuyPanel } from "@/components/storefront/BuyPanel";
 
 export const revalidate = 60;
 
+/** Product page v2 — price is revealed HERE, not in the storefront list (UI pages 11–13). */
 export default async function ProductPage({
   params,
 }: {
@@ -17,19 +18,31 @@ export default async function ProductPage({
   if (!data) notFound();
   const t = await getTranslations("shop");
   const { creator, product, variants, attributeOrder } = data;
+
+  // Physical products live under the Shop hub
+  if (product.type === "physical") redirect(`/${slug}/shop/${id}`);
+
   const th = themeOf(creator.theme?.preset);
   const config = (product.config ?? {}) as Record<string, unknown>;
 
-  const included =
-    product.type === "membership" ? ((config.included as string[]) ?? []) : [];
   const startsAt =
     product.type === "webinar" && config.starts_at
       ? new Date(config.starts_at as string)
       : null;
+  const reviews =
+    ((config.reviews as { name: string; stars: number; text: string }[]) ?? []).filter(
+      (r) => r.text?.trim()
+    );
+
+  const price = Number(product.price);
+  const discount =
+    product.discount_price != null ? Number(product.discount_price) : null;
+  const hero = product.hero_image_url ?? product.thumbnail_url;
 
   return (
     <div className="min-h-dvh" style={{ background: th.bg, color: th.ink }}>
-      <div className="mx-auto max-w-md px-4 py-6 pb-28">
+      {/* centered max-width column, PC included (UI page 11) */}
+      <div className="mx-auto max-w-[680px] px-4 py-6 pb-28">
         <Link
           href={`/${slug}`}
           className="text-sm font-semibold opacity-70 hover:opacity-100"
@@ -37,16 +50,19 @@ export default async function ProductPage({
           ← {creator.display_name ?? slug}
         </Link>
 
-        {Boolean(config.image_url) && (
+        {hero && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={config.image_url as string}
+            src={hero}
             alt=""
             className="mt-4 aspect-video w-full rounded-2xl object-cover shadow-card"
           />
         )}
 
         <h1 className="mt-4 font-heading text-2xl font-bold">{product.title}</h1>
+        {product.subtitle && (
+          <p className="mt-1 text-sm opacity-70">{product.subtitle}</p>
+        )}
 
         {startsAt && (
           <p
@@ -55,8 +71,11 @@ export default async function ProductPage({
           >
             🔴 {t("webinarAt")}{" "}
             {new Intl.DateTimeFormat(locale, {
-              weekday: "long", month: "long", day: "numeric",
-              hour: "2-digit", minute: "2-digit",
+              weekday: "long",
+              month: "long",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
             }).format(startsAt)}
             {config.duration_minutes
               ? ` · ${t("duration", { n: config.duration_minutes as number })}`
@@ -70,23 +89,45 @@ export default async function ProductPage({
           </p>
         )}
 
-        {product.description && (
-          <p className="mt-3 whitespace-pre-line text-[15px] leading-6 opacity-85">
-            {product.description}
+        {/* price reveal (list never shows it) */}
+        {product.type !== "lead_magnet" && (
+          <p className="mt-3">
+            <span className="text-2xl font-bold">
+              {(discount ?? price).toLocaleString()} {product.currency}
+            </span>
+            {discount != null && (
+              <span className="ml-2 text-base opacity-60 line-through">
+                {price.toLocaleString()} {product.currency}
+              </span>
+            )}
           </p>
         )}
 
-        {included.length > 0 && (
-          <div className="mt-4 rounded-2xl p-4" style={{ background: th.card }}>
-            <p className="text-sm font-bold">{t("included")}</p>
-            <ul className="mt-2 space-y-1.5">
-              {included.map((it) => (
-                <li key={it} className="flex gap-2 text-sm opacity-85">
-                  <span style={{ color: th.accent }}>✓</span>
-                  {it}
-                </li>
-              ))}
-            </ul>
+        {product.description_body && (
+          <p className="mt-3 whitespace-pre-line text-[15px] leading-6 opacity-85">
+            {product.description_body}
+          </p>
+        )}
+
+        {product.bottom_title && (
+          <p className="mt-4 font-heading text-lg font-bold">
+            {product.bottom_title}
+          </p>
+        )}
+
+        {reviews.length > 0 && (
+          <div className="mt-4 space-y-2.5">
+            {reviews.map((r, i) => (
+              <div key={i} className="rounded-2xl p-4" style={{ background: th.card }}>
+                <p className="text-sm font-semibold">
+                  {r.name || "★"}{" "}
+                  <span style={{ color: th.accent }}>
+                    {"★".repeat(Math.max(1, Math.min(5, r.stars || 5)))}
+                  </span>
+                </p>
+                <p className="mt-1 text-sm opacity-85">{r.text}</p>
+              </div>
+            ))}
           </div>
         )}
 
@@ -96,9 +137,9 @@ export default async function ProductPage({
               id: product.id,
               type: product.type,
               title: product.title,
-              price: Number(product.price),
+              price: discount ?? price,
               currency: product.currency,
-              is_recurring: product.type === "membership",
+              is_recurring: false,
               config,
             }}
             variants={variants}
@@ -106,6 +147,10 @@ export default async function ProductPage({
             themeButton={{ background: th.button, color: th.buttonText }}
           />
         </div>
+
+        <p className="mt-4 text-center text-xs opacity-60">
+          ✈️ {t("deliveredViaTelegram")}
+        </p>
 
         <p className="mt-10 text-center text-xs opacity-50">{t("poweredBy")}</p>
       </div>

@@ -16,7 +16,7 @@ export async function getStorefront(slug: string): Promise<{
   const { data: creator } = await db
     .from("creators")
     .select(
-      "id, email, store_slug, display_name, bio, profile_image_url, social_links, theme, currency, preferred_locale, status"
+      "id, telegram_user_id, telegram_username, store_slug, display_name, bio, profile_image_url, social_links, theme, currency, preferred_locale, status"
     )
     .eq("store_slug", slug)
     .eq("status", "active")
@@ -26,7 +26,7 @@ export async function getStorefront(slug: string): Promise<{
   const { data: products } = await db
     .from("products")
     .select(
-      "id, type, title, description, price, currency, status, sort_order, config"
+      "id, type, title, subtitle, card_style, thumbnail_url, hero_image_url, description_body, bottom_title, cta_button_text, price, discount_price, currency, status, sort_order, config"
     )
     .eq("creator_id", creator.id)
     .eq("status", "active")

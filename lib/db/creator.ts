@@ -2,7 +2,8 @@ import { supabaseAdmin } from "@/lib/db/client";
 
 export interface CreatorFull {
   id: string;
-  email: string;
+  telegram_user_id: string;
+  telegram_username: string | null;
   store_slug: string;
   display_name: string | null;
   bio: string | null;
@@ -18,8 +19,15 @@ export interface ProductRow {
   id: string;
   type: string;
   title: string;
-  description: string | null;
+  subtitle: string | null;
+  card_style: string;
+  thumbnail_url: string | null;
+  hero_image_url: string | null;
+  description_body: string | null;
+  bottom_title: string | null;
+  cta_button_text: string | null;
   price: number;
+  discount_price: number | null;
   currency: string;
   status: string;
   sort_order: number;
@@ -30,7 +38,7 @@ export async function getCreator(id: string): Promise<CreatorFull | null> {
   const { data } = await supabaseAdmin()
     .from("creators")
     .select(
-      "id, email, store_slug, display_name, bio, profile_image_url, social_links, theme, currency, preferred_locale, status"
+      "id, telegram_user_id, telegram_username, store_slug, display_name, bio, profile_image_url, social_links, theme, currency, preferred_locale, status"
     )
     .eq("id", id)
     .maybeSingle();
@@ -42,7 +50,7 @@ export async function getCreatorProducts(
 ): Promise<ProductRow[]> {
   const { data } = await supabaseAdmin()
     .from("products")
-    .select("id, type, title, description, price, currency, status, sort_order, config")
+    .select("id, type, title, subtitle, card_style, thumbnail_url, hero_image_url, description_body, bottom_title, cta_button_text, price, discount_price, currency, status, sort_order, config")
     .eq("creator_id", creatorId)
     .neq("status", "archived")
     .order("sort_order", { ascending: true })
@@ -69,7 +77,7 @@ export async function getCreatorSnapshot(creatorId: string) {
       db
         .from("orders")
         .select(
-          "id, item_amount, currency, payment_status, created_at, products(title), customers(email)"
+          "id, item_amount, currency, payment_status, created_at, products(title), customers(name, telegram_username)"
         )
         .eq("creator_id", creatorId)
         .order("created_at", { ascending: false })
@@ -98,8 +106,13 @@ export async function getCreatorSnapshot(creatorId: string) {
       createdAt: o.created_at,
       productTitle:
         (o.products as unknown as { title: string } | null)?.title ?? "—",
-      customerEmail:
-        (o.customers as unknown as { email: string } | null)?.email ?? "—",
+      customerName: (() => {
+        const c = o.customers as unknown as {
+          name: string | null;
+          telegram_username: string | null;
+        } | null;
+        return c?.name ?? (c?.telegram_username ? `@${c.telegram_username}` : "—");
+      })(),
     })),
   };
 }

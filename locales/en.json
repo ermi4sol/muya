@@ -338,7 +338,22 @@
     "memberNote": "Your membership is active. Member content and community access grow in the coming updates.",
     "communityNote": "You're in! The community feed opens in an upcoming update — you'll get an email when it's live.",
     "accessGeneric": "Your access is confirmed — check your email for the details.",
-    "openCommunity": "Open the community"
+    "openCommunity": "Open the community",
+    "shopCardTitle": "Shop",
+    "shopCardSub": "{n} products to browse",
+    "browse": "Browse",
+    "from": "From",
+    "shopEmpty": "Nothing in the shop yet.",
+    "cart": "Cart",
+    "cartEmpty": "Your cart is empty.",
+    "subtotal": "Subtotal",
+    "addToCart": "Add to cart",
+    "addedToCart": "Added",
+    "viewCart": "View cart",
+    "remove": "Remove",
+    "soldOut": "Sold out",
+    "inStock": "{n} in stock",
+    "deliveredViaTelegram": "Delivered via Telegram"
   },
   "community": {
     "placeholder": "Share something with the community…",

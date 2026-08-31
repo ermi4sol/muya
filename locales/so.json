@@ -338,7 +338,22 @@
     "memberNote": "Xubinnimadaadu waa firfircoon tahay. Waxyaabaha xubnaha ayaa ku soo kordhi doona cusboonaysiinta soo socota.",
     "communityNote": "Waad ku jirtaa! Bogga bulshada ayaa furmi doona cusboonaysiinta soo socota — iimayl ayaad heli doontaa marka la daaro.",
     "accessGeneric": "Gelitaankaaga waa la xaqiijiyay — iimaylkaaga ka eeg faahfaahinta.",
-    "openCommunity": "Fur bulshada"
+    "openCommunity": "Fur bulshada",
+    "shopCardTitle": "Dukaan",
+    "shopCardSub": "{n} badeeco oo la daalacan karo",
+    "browse": "Daalaco",
+    "from": "Laga bilaabo",
+    "shopEmpty": "Weli waxba kuma jiraan dukaanka.",
+    "cart": "Gaari",
+    "cartEmpty": "Gaarigaagu waa madhan yahay.",
+    "subtotal": "Isku-dar hoosaad",
+    "addToCart": "Ku dar gaariga",
+    "addedToCart": "Waa lagu daray",
+    "viewCart": "Eeg gaariga",
+    "remove": "Ka saar",
+    "soldOut": "Waa la iibiyay",
+    "inStock": "{n} ayaa kaydka ku jira",
+    "deliveredViaTelegram": "Waxaa lagu keenaa Telegram"
   },
   "community": {
     "placeholder": "Wax la wadaag bulshada…",
