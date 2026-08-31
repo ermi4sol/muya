@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { getUserSession } from "@/lib/auth/session";
 import { supabaseAdmin } from "@/lib/db/client";
-import { ProductBodySchema, insertPhysical } from "@/lib/db/products";
+import {
+  ProductBodySchema,
+  insertPhysical,
+  replaceCustomFields,
+} from "@/lib/db/products";
 
 export async function POST(req: Request) {
   const session = await getUserSession();
@@ -32,8 +36,15 @@ export async function POST(req: Request) {
       creator_id: session.sub,
       type: b.type,
       title: b.title,
-      description: b.description,
+      subtitle: b.subtitle,
+      card_style: b.card_style,
+      thumbnail_url: b.thumbnail_url ?? null,
+      hero_image_url: b.hero_image_url ?? null,
+      description_body: b.description_body,
+      bottom_title: b.bottom_title,
+      cta_button_text: b.cta_button_text,
       price: b.price,
+      discount_price: b.discount_price ?? null,
       is_recurring: b.is_recurring,
       billing_interval: b.is_recurring ? (b.billing_interval ?? "monthly") : null,
       status: b.status,
@@ -46,15 +57,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "create_failed" }, { status: 500 });
   }
 
+  if (b.custom_fields?.length) {
+    await replaceCustomFields(product.id, b.custom_fields);
+  }
   if (b.type === "physical" && b.attributes?.length) {
     await insertPhysical(product.id, b.attributes, b.variants ?? []);
-  }
-  if (b.type === "community") {
-    await db.from("communities").insert({
-      product_id: product.id,
-      name: b.title,
-      description: b.description,
-    });
   }
 
   return NextResponse.json({ id: product.id });

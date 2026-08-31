@@ -3,10 +3,12 @@ import { z } from "zod";
 import { getUserSession } from "@/lib/auth/session";
 import { supabaseAdmin } from "@/lib/db/client";
 import {
-  ProductBodySchema,
+  ProductBaseSchema,
+  productColumns,
   insertPhysical,
   deletePhysical,
-  getProductWithPhysical,
+  getProductFull,
+  replaceCustomFields,
 } from "@/lib/db/products";
 
 async function ownedProduct(id: string, creatorId: string) {
@@ -29,11 +31,11 @@ export async function GET(
   const { id } = await ctx.params;
   const owned = await ownedProduct(id, session.sub);
   if (!owned) return NextResponse.json({ error: "not_found" }, { status: 404 });
-  const full = await getProductWithPhysical(id);
+  const full = await getProductFull(id);
   return NextResponse.json(full);
 }
 
-const PatchSchema = ProductBodySchema.partial().extend({
+const PatchSchema = ProductBaseSchema.partial().extend({
   sort_order: z.number().int().min(0).max(10000).optional(),
   status: z.enum(["active", "draft", "archived"]).optional(),
 });
@@ -57,35 +59,40 @@ export async function PATCH(
       { status: 400 }
     );
   }
-  const { attributes, variants, type: _ignoredType, ...fields } = parsed.data;
+  if (
+    parsed.data.discount_price != null &&
+    parsed.data.price != null &&
+    parsed.data.discount_price >= parsed.data.price
+  ) {
+    return NextResponse.json(
+      { error: "invalid_request", detail: "Discount price must be lower than the regular price" },
+      { status: 400 }
+    );
+  }
+  const { attributes, variants, custom_fields, sort_order, ...bodyFields } =
+    parsed.data;
 
-  if (Object.keys(fields).length > 0) {
+  const cols = productColumns(bodyFields);
+  if (sort_order !== undefined) cols.sort_order = sort_order;
+
+  if (Object.keys(cols).length > 0) {
     const { error } = await supabaseAdmin()
       .from("products")
-      .update(fields)
+      .update(cols)
       .eq("id", id);
     if (error) {
       return NextResponse.json({ error: "update_failed" }, { status: 500 });
     }
   }
 
-  // Physical products: replace attributes/variants wholesale (MVP-simple)
+  if (custom_fields) {
+    await replaceCustomFields(id, custom_fields);
+  }
+
+  // Physical products: replace attributes/variants wholesale (simple + safe)
   if (owned.type === "physical" && attributes) {
     await deletePhysical(id);
     await insertPhysical(id, attributes, variants ?? []);
-  }
-
-  // Keep community name/description in sync
-  if (owned.type === "community" && (fields.title || fields.description)) {
-    await supabaseAdmin()
-      .from("communities")
-      .update({
-        ...(fields.title ? { name: fields.title } : {}),
-        ...(fields.description !== undefined
-          ? { description: fields.description }
-          : {}),
-      })
-      .eq("product_id", id);
   }
 
   return NextResponse.json({ ok: true });

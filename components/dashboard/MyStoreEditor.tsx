@@ -9,9 +9,9 @@ import type { CreatorFull, ProductRow } from "@/lib/db/creator";
 
 const SOCIALS = ["tiktok", "instagram", "youtube", "telegram"] as const;
 const TYPE_ICONS: Record<string, string> = {
-  digital_download: "📥", course: "🎓", coaching_call: "🗓️", webinar: "🎥",
-  membership: "⭐", lead_magnet: "🎁", custom_product: "✨", external_link: "🔗",
-  community: "💬", physical: "🛍️",
+  digital_product: "📥", lead_magnet: "🎁", coaching_call: "🗓️", course: "🎓",
+  webinar: "🎥", affiliate_link: "🤝", url_media: "🔗", physical: "🛍️",
+  custom_product: "✨",
 };
 
 export function MyStoreEditor({
@@ -303,14 +303,6 @@ function ProductsTab({ initial }: { initial: ProductRow[] }) {
                   {Number(p.price).toLocaleString()} {p.currency}
                 </p>
               </Link>
-              {p.type === "community" && (
-                <Link
-                  href={`/dashboard/community/${p.id}`}
-                  className="rounded-full bg-accent-100 px-2.5 py-1 text-xs font-semibold text-accent-900"
-                >
-                  💬
-                </Link>
-              )}
               <button
                 onClick={() => toggle(p)}
                 className={`rounded-full px-2.5 py-1 text-xs font-semibold ${

@@ -2,105 +2,100 @@ import { redirect } from "next/navigation";
 import { getAdminSession } from "@/lib/auth/session";
 import { supabaseAdmin } from "@/lib/db/client";
 import { AdminNav } from "@/components/admin/AdminNav";
-import { SafetyActions } from "@/components/admin/SafetyActions";
+import { Link } from "@/i18n/navigation";
 
 export const dynamic = "force-dynamic";
 
+/**
+ * v2 Trust & safety — storefront/creator level (communities removed).
+ * Suspend/reinstate itself lives in the Creators tab; this page surfaces
+ * the current state at a glance.
+ */
 export default async function AdminSafetyPage() {
   const session = await getAdminSession();
   if (!session) redirect("/admin/login");
   const db = supabaseAdmin();
 
-  const [{ data: reported }, { data: communities }] = await Promise.all([
+  const [{ data: suspended }, { data: recent }] = await Promise.all([
     db
-      .from("community_posts")
-      .select(
-        "id, body, report_reason, created_at, communities(id, name, frozen), customers(email)"
-      )
-      .eq("reported", true)
-      .eq("removed", false)
+      .from("creators")
+      .select("id, store_slug, display_name, telegram_username, created_at")
+      .eq("status", "suspended")
       .order("created_at", { ascending: false })
-      .limit(50),
+      .limit(100),
     db
-      .from("communities")
-      .select("id, name, frozen, products(creators(store_slug))")
+      .from("creators")
+      .select("id, store_slug, display_name, telegram_username, status, created_at")
       .order("created_at", { ascending: false })
-      .limit(50),
+      .limit(20),
   ]);
 
   return (
     <div className="min-h-dvh bg-neutral-100">
-      <AdminNav email={session.email} role={session.adminRole ?? ""} active="/admin/safety" />
+      <AdminNav
+        email={session.email}
+        role={session.adminRole ?? ""}
+        active="/admin/safety"
+      />
       <main className="mx-auto max-w-3xl px-4 py-8">
         <h1 className="text-xl font-semibold text-neutral-900">
-          Trust &amp; safety{" "}
-          {(reported?.length ?? 0) > 0 && (
-            <span className="ml-1 rounded-full bg-red-100 px-2.5 py-0.5 text-sm font-bold text-red-700">
-              {reported?.length}
-            </span>
-          )}
+          Trust &amp; safety
         </h1>
+        <p className="mt-1 text-sm text-neutral-500">
+          Storefront-level enforcement. Suspend or reinstate creators from the{" "}
+          <Link href="/admin/creators" className="font-medium text-neutral-900 underline">
+            Creators tab
+          </Link>
+          .
+        </p>
 
-        <h2 className="mt-5 text-sm font-semibold uppercase tracking-wide text-neutral-400">
-          Reported posts
-        </h2>
-        <div className="mt-2 space-y-2">
-          {(reported ?? []).length === 0 && (
-            <p className="rounded-xl border border-neutral-200 bg-white p-5 text-center text-sm text-neutral-500">
-              Nothing reported. 🎉
-            </p>
-          )}
-          {(reported ?? []).map((p) => {
-            const community = p.communities as unknown as {
-              id: string; name: string; frozen: boolean;
-            } | null;
-            const author = p.customers as unknown as { email: string } | null;
-            return (
-              <div key={p.id} className="rounded-xl border border-red-200 bg-white p-4">
-                <p className="text-xs text-neutral-500">
-                  {community?.name} · {author?.email} ·{" "}
-                  {new Date(p.created_at).toLocaleString()}
-                </p>
-                <p className="mt-1 whitespace-pre-line text-sm text-neutral-800">
-                  {p.body}
-                </p>
-                <p className="mt-1 text-xs font-semibold text-red-600">
-                  Reason: {p.report_reason ?? "—"}
-                </p>
-                <SafetyActions
-                  postId={p.id}
-                  communityId={community?.id ?? null}
-                  communityFrozen={community?.frozen ?? false}
-                />
-              </div>
-            );
-          })}
-        </div>
-
-        <h2 className="mt-8 text-sm font-semibold uppercase tracking-wide text-neutral-400">
-          Communities
+        <h2 className="mt-6 text-sm font-semibold uppercase tracking-wide text-neutral-400">
+          Suspended storefronts ({suspended?.length ?? 0})
         </h2>
         <ul className="mt-2 divide-y divide-neutral-200 rounded-xl border border-neutral-200 bg-white">
-          {(communities ?? []).map((c) => {
-            const creator = (
-              c.products as unknown as { creators: { store_slug: string } | null } | null
-            )?.creators;
-            return (
-              <li key={c.id} className="flex items-center justify-between px-4 py-2.5 text-sm">
-                <span className="text-neutral-700">
-                  {c.name}{" "}
-                  <span className="text-xs text-neutral-400">
-                    /{creator?.store_slug}
-                  </span>
+          {(suspended ?? []).length === 0 && (
+            <li className="px-4 py-4 text-center text-sm text-neutral-500">
+              No suspended creators. 🎉
+            </li>
+          )}
+          {(suspended ?? []).map((c) => (
+            <li key={c.id} className="flex items-center justify-between px-4 py-2.5 text-sm">
+              <span className="text-neutral-700">
+                {c.display_name ?? "—"}{" "}
+                <span className="text-xs text-neutral-400">
+                  /{c.store_slug} · @{c.telegram_username ?? "?"}
                 </span>
-                <SafetyActions
-                  postId={null}
-                  communityId={c.id}
-                  communityFrozen={c.frozen}
-                />
-              </li>
-            );
-          })}
+              </span>
+              <span className="rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-semibold text-red-700">
+                suspended
+              </span>
+            </li>
+          ))}
+        </ul>
+
+        <h2 className="mt-8 text-sm font-semibold uppercase tracking-wide text-neutral-400">
+          Newest creators
+        </h2>
+        <ul className="mt-2 divide-y divide-neutral-200 rounded-xl border border-neutral-200 bg-white">
+          {(recent ?? []).map((c) => (
+            <li key={c.id} className="flex items-center justify-between px-4 py-2.5 text-sm">
+              <span className="text-neutral-700">
+                {c.display_name ?? "—"}{" "}
+                <span className="text-xs text-neutral-400">
+                  /{c.store_slug} · @{c.telegram_username ?? "?"}
+                </span>
+              </span>
+              <span
+                className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
+                  c.status === "active"
+                    ? "bg-emerald-100 text-emerald-700"
+                    : "bg-red-100 text-red-700"
+                }`}
+              >
+                {c.status}
+              </span>
+            </li>
+          ))}
         </ul>
       </main>
     </div>

@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
+import { Pool } from "pg";
 import { supabaseAdmin } from "@/lib/db/client";
 
-// Temporary Phase-3 diagnostic endpoint. Reports component status only —
-// never values. Will be removed/locked in the security hardening phase.
+export const runtime = "nodejs";
+
+// v2 diagnostic endpoint. Reports component status only — never values.
+// Locked down / removed in the R7 hardening pass.
 export async function GET() {
   const requiredEnv = [
     "NEXT_PUBLIC_APP_URL",
@@ -11,6 +14,10 @@ export async function GET() {
     "SUPABASE_SERVICE_ROLE_KEY",
     "SESSION_SECRET",
     "CRON_SECRET",
+    "DATABASE_URL",
+    "TELEGRAM_BOT_TOKEN",
+    "TELEGRAM_BOT_USERNAME",
+    "TELEGRAM_WEBHOOK_SECRET",
     "RESEND_API_KEY",
     "EMAIL_FROM",
     "GOOGLE_CLIENT_ID",
@@ -22,30 +29,38 @@ export async function GET() {
   ];
   const missingEnv = requiredEnv.filter((k) => !process.env[k]);
 
-  let db = "ok";
+  // Supabase REST reachability (service role)
+  let supabase = "ok";
   try {
     const { error } = await supabaseAdmin()
       .from("rate_limits")
       .select("key")
       .limit(1);
-    if (error) db = `error: ${error.message}`;
+    if (error) supabase = `error: ${error.message}`;
   } catch (e) {
-    db = `throw: ${e instanceof Error ? e.message : String(e)}`;
+    supabase = `throw: ${e instanceof Error ? e.message : String(e)}`;
   }
 
-  let tokenInsert = "ok";
-  try {
-    const { error } = await supabaseAdmin().from("magic_link_tokens").insert({
-      owner_type: "customer",
-      owner_id: null,
-      email: "health@check.local",
-      token_hash: `health-${Math.random().toString(36).slice(2)}`,
-      expires_at: new Date(Date.now() + 1000).toISOString(),
+  // Direct Postgres via DATABASE_URL (what Better Auth uses)
+  let postgres = "ok";
+  if (process.env.DATABASE_URL) {
+    const pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+      max: 1,
+      ssl: { rejectUnauthorized: false },
+      connectionTimeoutMillis: 8000,
     });
-    if (error) tokenInsert = `error: ${error.message}`;
-  } catch (e) {
-    tokenInsert = `throw: ${e instanceof Error ? e.message : String(e)}`;
+    try {
+      const r = await pool.query('select count(*)::int as n from "user"');
+      postgres = `ok (better-auth users: ${r.rows[0].n})`;
+    } catch (e) {
+      postgres = `error: ${e instanceof Error ? e.message : String(e)}`;
+    } finally {
+      await pool.end().catch(() => {});
+    }
+  } else {
+    postgres = "skipped: DATABASE_URL not set";
   }
 
-  return NextResponse.json({ missingEnv, db, tokenInsert });
+  return NextResponse.json({ missingEnv, supabase, postgres });
 }
