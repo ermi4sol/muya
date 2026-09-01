@@ -1,4 +1,5 @@
 import { supabaseAdmin } from "@/lib/db/client";
+import { notifyAdminsTelegram } from "@/lib/telegram/admin";
 
 function slugify(input: string): string {
   const base = input
@@ -124,6 +125,12 @@ export async function provisionTelegramIdentity(
       result.storeSlug = created.store_slug;
       result.isNewCreator = true;
       await db.from("creator_subscriptions").insert({ creator_id: created.id, tier: "free" });
+      // System alert: a new creator joined
+      await notifyAdminsTelegram(
+        `👤 <b>New creator signed up</b>\n` +
+          `${input.displayName}${input.telegramUsername ? ` (@${input.telegramUsername})` : ""}\n` +
+          `Store: /${created.store_slug}`
+      ).catch(() => {});
     }
   }
 

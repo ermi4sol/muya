@@ -329,7 +329,10 @@
     "previewTelegramNote": "Ergaan Telegram irratti dhufa",
     "ctaBuy": "Amma bitadhaa",
     "ctaGet": "Bilisaan argadhaa",
-    "ctaOpen": "Bani"
+    "ctaOpen": "Bani",
+    "attachFile": "Barnoota kanaaf faayilii maxxansaa",
+    "removeAttachment": "Balleessi",
+    "attachFailed": "Ol kaa'uun hin milkoofne — irra deebi'aa yaalaa."
   },
   "shop": {
     "buy": "Amma bitadhu",

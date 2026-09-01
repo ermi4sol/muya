@@ -66,8 +66,15 @@ export async function POST(req: Request) {
   }
 
   if (b.status === "active") {
+    const { data: creatorRow } = await db
+      .from("creators")
+      .select("display_name, store_slug")
+      .eq("id", session.sub)
+      .maybeSingle();
     await notifyAdminsTelegram(
-      `🆕 <b>New product published</b>\n${b.title} (${b.type})`
+      `🆕 <b>New product published</b>\n` +
+        `${b.title} (${b.type}) · ${b.price > 0 ? `${b.price.toLocaleString()} ETB` : "free"}\n` +
+        `Creator: ${creatorRow?.display_name ?? "?"} (/${creatorRow?.store_slug ?? "?"})`
     );
   }
 

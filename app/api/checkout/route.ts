@@ -69,6 +69,18 @@ async function handle(req: Request) {
   const orderIds: string[] = [];
   const alerts: Promise<unknown>[] = [];
 
+  // Customer identity for admin alerts
+  const { data: customerRow } = await db
+    .from("customers")
+    .select("name, telegram_username")
+    .eq("id", customerId)
+    .maybeSingle();
+  const customerLabel =
+    (customerRow?.name ?? "") +
+    (customerRow?.telegram_username
+      ? ` (@${customerRow.telegram_username})`
+      : ` (Telegram ${session.telegramId})`);
+
   // Affiliate attribution: ?ref= cookie set by RefBeacon on the storefront
   const refCode =
     req.headers.get("cookie")?.match(/(?:^|;\s*)muya_ref=([a-z0-9]{4,20})/i)?.[1] ??
@@ -237,14 +249,21 @@ async function handle(req: Request) {
           productTitle: product.title,
           productType: product.type,
           creatorName,
-          customerLabel: `Telegram ${session.telegramId}`,
+          customerLabel,
           total: totalLabel,
           details: variantSummary
             ? `Variant: ${variantSummary} × ${quantity}`
             : undefined,
         }).catch((e) => console.error("admin alert failed:", e)),
         notifyAdminsTelegram(
-          `🛎️ <b>New order pending</b>\n${product.title} · ${totalLabel}\nCreator: ${creatorName}`,
+          `🛎️ <b>New order pending</b>\n` +
+            `Product: ${product.title} (${product.type})` +
+            (variantSummary ? `\nVariant: ${variantSummary} × ${quantity}` : "") +
+            `\nTotal: ${totalLabel}` +
+            `\nCreator: ${creatorName} (/${creator.store_slug})` +
+            `\nCustomer: ${customerLabel}` +
+            (b.shipping?.cod ? `\n💵 Cash on delivery` : "") +
+            `\nRef: ${order.id.slice(0, 8).toUpperCase()}`,
           [[{ text: "Open orders queue", url: `${env.appUrl()}/admin/orders` }]]
         )
       );

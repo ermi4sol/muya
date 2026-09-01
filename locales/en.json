@@ -329,7 +329,10 @@
     "previewTelegramNote": "Delivery arrives via Telegram",
     "ctaBuy": "Buy Now",
     "ctaGet": "Get it free",
-    "ctaOpen": "Open"
+    "ctaOpen": "Open",
+    "attachFile": "Attach a file to this lesson",
+    "removeAttachment": "Remove",
+    "attachFailed": "Upload failed — try again."
   },
   "shop": {
     "buy": "Buy now",

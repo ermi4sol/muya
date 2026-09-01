@@ -15,12 +15,17 @@ export default async function LearnPage({
   const modules =
     ((order.products.config?.modules ?? []) as {
       title: string;
-      lessons: { title: string; video_url?: string; text?: string }[];
+      lessons: {
+        title: string;
+        video_url?: string;
+        text?: string;
+        attachment?: { path: string; name: string } | null;
+      }[];
     }[]) ?? [];
 
   return (
     <div className="min-h-dvh bg-bg">
-      <CourseViewer title={order.products.title} modules={modules} />
+      <CourseViewer title={order.products.title} modules={modules} orderId={orderId} />
     </div>
   );
 }

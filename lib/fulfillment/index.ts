@@ -11,6 +11,7 @@ import {
   deliverFileViaTelegram,
 } from "@/lib/telegram/notify";
 import { enrollInFunnels } from "@/lib/telegram/growth";
+import { notifyAdminsTelegram } from "@/lib/telegram/admin";
 import { env } from "@/lib/env";
 
 interface OrderFull {
@@ -139,6 +140,14 @@ export async function approveOrder(
       attempts: 1,
       next_retry_at: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
     });
+    // System alert: delivery had a problem and is queued for retry
+    await notifyAdminsTelegram(
+      `⚠️ <b>Delivery problem — queued for retry</b>\n` +
+        `Order ${orderId.slice(0, 8).toUpperCase()} (${order.products.title})\n` +
+        `Customer: ${order.customers.name ?? ""}${order.customers.telegram_username ? ` (@${order.customers.telegram_username})` : ""}\n` +
+        `Error: ${(e instanceof Error ? e.message : String(e)).slice(0, 180)}\n` +
+        `The hourly sweep retries automatically.`
+    ).catch(() => {});
   }
   return { ok: true };
 }

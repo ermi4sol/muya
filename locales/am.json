@@ -329,7 +329,10 @@
     "previewTelegramNote": "መላኪያ በቴሌግራም ይደርሳል",
     "ctaBuy": "አሁን ይግዙ",
     "ctaGet": "በነፃ ያግኙ",
-    "ctaOpen": "ክፈት"
+    "ctaOpen": "ክፈት",
+    "attachFile": "ለዚህ ትምህርት ፋይል ያያይዙ",
+    "removeAttachment": "አስወግድ",
+    "attachFailed": "መስቀል አልተሳካም — እንደገና ይሞክሩ።"
   },
   "shop": {
     "buy": "አሁን ግዛ",

@@ -9,6 +9,7 @@ import {
   setTelegramWebhook,
 } from "@/lib/telegram/api";
 import { processFunnelSteps, sendScheduledFlows } from "@/lib/telegram/growth";
+import { notifyAdminsTelegram } from "@/lib/telegram/admin";
 
 /**
  * Background sweep (invoked by the Netlify scheduled function, hourly):
@@ -143,6 +144,21 @@ export async function POST(req: Request) {
     }
   } catch (e) {
     results.webhook = `error: ${e instanceof Error ? e.message : String(e)}`;
+  }
+
+  // System alert: only when something needs the admin's eyes
+  const webhookHealed = results.webhook === "re-registered";
+  const webhookBroken = results.webhook.startsWith("error");
+  if (results.dead > 0 || webhookHealed || webhookBroken) {
+    await notifyAdminsTelegram(
+      `🛠 <b>System update (hourly sweep)</b>\n` +
+        (results.dead > 0
+          ? `❌ ${results.dead} delivery job(s) permanently failed after retries — check failed_jobs.\n`
+          : "") +
+        (webhookHealed ? `🔄 Telegram webhook was down and has been re-registered.\n` : "") +
+        (webhookBroken ? `⚠️ Telegram webhook check failed: ${results.webhook.slice(0, 160)}\n` : "") +
+        `Retried: ${results.retried} · resolved: ${results.resolved} · reminders: ${results.reminders} · funnel steps: ${results.funnelSteps} · broadcasts: ${results.flowMessages}`
+    ).catch(() => {});
   }
 
   return NextResponse.json(results);

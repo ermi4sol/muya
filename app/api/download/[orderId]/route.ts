@@ -2,9 +2,15 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/db/client";
 import { verifyAccess } from "@/lib/fulfillment";
 
-/** Entitlement-checked download: redirects to a 10-minute signed URL. */
+type LessonFile = { path?: string; name?: string };
+
+/**
+ * Entitlement-checked download: redirects to a 10-minute signed URL.
+ * - default: the product's main file (digital products / lead magnets)
+ * - ?lesson=<module>-<lesson>: a course lesson's attachment
+ */
 export async function GET(
-  _req: Request,
+  req: Request,
   ctx: { params: Promise<{ orderId: string }> }
 ) {
   const { orderId } = await ctx.params;
@@ -15,10 +21,25 @@ export async function GET(
   if (!order) {
     return NextResponse.json({ error: "no_access" }, { status: 403 });
   }
-  const file = (order.products.config?.file ?? null) as {
-    path?: string;
-    name?: string;
-  } | null;
+
+  const lessonParam = new URL(req.url).searchParams.get("lesson");
+  let file: LessonFile | null = null;
+
+  if (lessonParam) {
+    // Course lesson attachment — resolved strictly from THIS product's config
+    const m = lessonParam.match(/^(\d{1,3})-(\d{1,3})$/);
+    if (!m || order.products.type !== "course") {
+      return NextResponse.json({ error: "not_found" }, { status: 404 });
+    }
+    const modules =
+      ((order.products.config?.modules ?? []) as {
+        lessons?: { attachment?: LessonFile | null }[];
+      }[]) ?? [];
+    file = modules[Number(m[1])]?.lessons?.[Number(m[2])]?.attachment ?? null;
+  } else {
+    file = (order.products.config?.file ?? null) as LessonFile | null;
+  }
+
   if (!file?.path) {
     return NextResponse.json({ error: "no_file" }, { status: 404 });
   }

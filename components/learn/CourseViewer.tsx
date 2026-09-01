@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 
-interface Lesson { title: string; video_url?: string; text?: string }
+interface LessonFile { path: string; name: string }
+interface Lesson {
+  title: string;
+  video_url?: string;
+  text?: string;
+  attachment?: LessonFile | null;
+}
 interface Module { title: string; lessons: Lesson[] }
 
 function youtubeId(url?: string): string | null {
@@ -16,9 +22,11 @@ function youtubeId(url?: string): string | null {
 export function CourseViewer({
   title,
   modules,
+  orderId,
 }: {
   title: string;
   modules: Module[];
+  orderId: string;
 }) {
   const [active, setActive] = useState<{ m: number; l: number }>({ m: 0, l: 0 });
   const [openModules, setOpenModules] = useState<Set<number>>(new Set([0]));
@@ -55,6 +63,14 @@ export function CourseViewer({
               {lesson.text}
             </p>
           )}
+          {lesson.attachment?.path && (
+            <a
+              href={`/api/download/${orderId}?lesson=${active.m}-${active.l}`}
+              className="mt-2 inline-flex items-center gap-1.5 rounded-control border border-primary-600 px-3 py-2 text-sm font-semibold text-primary-700 hover:bg-primary-50"
+            >
+              📎 {lesson.attachment.name}
+            </a>
+          )}
         </div>
       )}
 
@@ -90,6 +106,9 @@ export function CourseViewer({
                     >
                       <span>▶</span>
                       <span className="truncate">{l.title || `Lesson ${li + 1}`}</span>
+                      {l.attachment?.path && (
+                        <span className="ml-auto shrink-0 text-xs opacity-60">📎</span>
+                      )}
                     </button>
                   </li>
                 ))}

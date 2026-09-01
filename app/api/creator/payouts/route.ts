@@ -4,6 +4,7 @@ import { getUserSession } from "@/lib/auth/session";
 import { createPayoutRequest } from "@/lib/db/ledger";
 import { sendAdminAlert } from "@/lib/email/orders";
 import { notifyAdminsTelegram } from "@/lib/telegram/admin";
+import { supabaseAdmin } from "@/lib/db/client";
 import { env } from "@/lib/env";
 
 const Body = z.object({
@@ -37,8 +38,17 @@ export async function POST(req: Request) {
     ctaPath: "/admin/payouts",
     ctaLabel: "Open the payout queue",
   });
+  const { data: creatorRow } = await supabaseAdmin()
+    .from("creators")
+    .select("display_name, store_slug, telegram_username")
+    .eq("id", session.sub)
+    .maybeSingle();
+  const creatorLabel = `${creatorRow?.display_name ?? creatorRow?.store_slug ?? "?"} (/${creatorRow?.store_slug ?? "?"}${creatorRow?.telegram_username ? `, @${creatorRow.telegram_username}` : ""})`;
   await notifyAdminsTelegram(
-    `💸 <b>Payout request</b> — ${parsed.data.amount.toLocaleString()} ETB (${parsed.data.method})`,
+    `💸 <b>Payout request</b> — ${parsed.data.amount.toLocaleString()} ETB (${parsed.data.method})` +
+      `\nCreator: ${creatorLabel}` +
+      `\nAccount: ${parsed.data.details.account_name} · ${parsed.data.details.account_number}` +
+      (parsed.data.details.bank_name ? ` · ${parsed.data.details.bank_name}` : ""),
     [[{ text: "Open payout queue", url: `${env.appUrl()}/admin/payouts` }]]
   );
   return NextResponse.json({ ok: true });

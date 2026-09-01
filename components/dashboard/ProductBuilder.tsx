@@ -16,7 +16,13 @@ type Variant = {
   stock_count: number;
   weight_grams?: number | null;
 };
-type Lesson = { title: string; video_url?: string; text?: string };
+type LessonFile = { path: string; name: string; size?: number };
+type Lesson = {
+  title: string;
+  video_url?: string;
+  text?: string;
+  attachment?: LessonFile | null;
+};
 type Module = { title: string; lessons: Lesson[] };
 type CustomField = { label: string; field_type: "text" | "textarea" | "phone" | "email" };
 type Review = { name: string; stars: number; text: string };
@@ -1409,6 +1415,17 @@ function CourseEditor({
                     }}
                     className={`${input} mt-1.5`}
                   />
+                  <div className="mt-1.5">
+                    <LessonAttachment
+                      attachment={l.attachment ?? null}
+                      onChange={(att) => {
+                        const lessons = m.lessons.map((x, j) =>
+                          j === li ? { ...x, attachment: att } : x
+                        );
+                        onChange(modules.map((x, j) => (j === mi ? { ...x, lessons } : x)));
+                      }}
+                    />
+                  </div>
                 </div>
               ))}
               <button
@@ -1433,6 +1450,63 @@ function CourseEditor({
           {t("addModule")}
         </button>
       </div>
+    </div>
+  );
+}
+
+/** Per-lesson attachment: any file the buyer can download beside the lesson notes. */
+function LessonAttachment({
+  attachment,
+  onChange,
+}: {
+  attachment: LessonFile | null;
+  onChange: (f: LessonFile | null) => void;
+}) {
+  const t = useTranslations("builder");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function upload(f: File) {
+    setBusy(true);
+    setErr(null);
+    const form = new FormData();
+    form.append("file", f);
+    const res = await fetch("/api/creator/upload-file", { method: "POST", body: form });
+    const body = await res.json().catch(() => ({}));
+    setBusy(false);
+    if (res.ok && body.path) onChange(body);
+    else setErr(body.detail ?? t("attachFailed"));
+  }
+
+  return (
+    <div className="flex flex-wrap items-center gap-2 text-xs">
+      {attachment ? (
+        <>
+          <span className="inline-flex items-center gap-1 rounded-full bg-primary-50 px-2.5 py-1 font-medium text-primary-800">
+            📎 <span className="max-w-[160px] truncate">{attachment.name}</span>
+          </span>
+          <button
+            onClick={() => onChange(null)}
+            className="font-medium text-ink-faint hover:text-danger"
+          >
+            ✕ {t("removeAttachment")}
+          </button>
+        </>
+      ) : (
+        <label className="cursor-pointer font-semibold text-primary-700 hover:underline">
+          {busy ? "…" : `📎 ${t("attachFile")}`}
+          <input
+            type="file"
+            className="hidden"
+            onChange={(e) => {
+              const f = e.target.files?.[0];
+              if (f) upload(f);
+              e.target.value = "";
+            }}
+          />
+        </label>
+      )}
+      {err && <span className="text-danger">{err}</span>}
     </div>
   );
 }

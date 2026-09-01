@@ -329,7 +329,10 @@
     "previewTelegramNote": "Gaarsiintu waxay ku timaadaa Telegram",
     "ctaBuy": "Hadda iibso",
     "ctaGet": "Bilaash ku hel",
-    "ctaOpen": "Fur"
+    "ctaOpen": "Fur",
+    "attachFile": "Ku lifaaq fayl casharkan",
+    "removeAttachment": "Ka saar",
+    "attachFailed": "Soo raristu way fashilantay — mar kale isku day."
   },
   "shop": {
     "buy": "Hadda iibso",
