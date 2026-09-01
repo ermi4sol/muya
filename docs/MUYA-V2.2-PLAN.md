@@ -1,8 +1,8 @@
-# MUYA v2.2 — Shop, Branding, Store Sections & Webinar Rework
+# MUYA v2.2 — Shop, Branding, Store Sections, Webinar Rework & Cleanup Pass
 
 *Planned 2026-09-01. Status: **NOT built yet** — build starts only when the founder reviews this file and says go. Everything ships as ONE build phase → ONE deploy (intermediate commits `[skip netlify]`).*
 
-Four parts: **(1)** the e-commerce Shop, **(2)** the changeable company name, **(3)** My Store → Products cleanup + storefront sections, **(4)** creator-owned webinar links with protected registration.
+Five parts: **(1)** the e-commerce Shop, **(2)** the changeable company name, **(3)** My Store → Products cleanup + storefront sections, **(4)** creator-owned webinar links with protected registration, **(5)** the small-debts cleanup pass.
 
 ---
 
@@ -169,6 +169,35 @@ This is strictly stronger than plain one-time-use: a one-time link dies for the 
 
 ---
 
+## Part 5 — Cleanup pass (small known debts)
+
+### 5.1 Separate admin session (fixes the one-browser collision)
+
+*The bug you hit: signing in as a creator replaces the admin session, because both share one auth cookie.*
+
+**Files:** **new** `lib/auth/admin-auth.ts` (a second Better Auth instance on the same database with `cookiePrefix: "muya-admin"` and `basePath: "/api/admin-auth"`), **new** `app/api/admin-auth/[...all]/route.ts`, **new** `lib/auth/admin-client.ts` (auth client pointed at `/api/admin-auth`); `app/[locale]/admin/login/page.tsx` + `admin/setup` + the bootstrap route switch to it; `getAdminSession()` in `lib/auth/session.ts` reads the admin instance.
+
+- Result: admin and creator sessions live in **different cookies** — you can be signed into /admin and /dashboard in the same browser at the same time, no more seesaw.
+- The admin sign-out shim (`/api/auth/logout?admin=1`) signs out the admin cookie only.
+
+### 5.2 Admin session duration back to 12 hours
+
+On the new admin auth instance: `session.expiresIn: 12h`, no long cookie cache — matching v1's stricter posture. Creator/customer sessions stay 60 days.
+
+### 5.3 Dead locale-key pruning
+
+A sweep script compares every key in the 5 locale files against actual `t("…")` usage in code, and deletes orphans (v1 leftovers: magic-link auth strings, `restore*`, `checkEmail*`, community/membership strings, `statusEmailed`, etc.). Same keys removed from all 5 languages so the files stay mirrored.
+
+### 5.4 Health endpoint lockdown
+
+`/api/health` becomes two-mode: public call returns only `{ ok: true }`; the full env/DB detail requires the `x-setup-key: CRON_SECRET` header. (Deferred from R7 hardening.)
+
+### 5.5 Retire dead v1 modules
+
+Remove modules nothing imports anymore after Part 4 (`lib/integrations/zoom.ts` retirement per 4.3, `lib/payments` remnants, unused queue helpers if orphaned) — verified by typecheck + grep before deletion.
+
+---
+
 ## Build order (single phase → single deploy)
 
 1. Migration `0008_v2_2` via MCP (+ local file).
@@ -177,10 +206,11 @@ This is strictly stronger than plain one-time-use: a one-time link dies for the 
 4. Part 3 sections + My Store cleanup.
 5. Part 1 Shop (biggest chunk last).
 6. Locale keys for all new UI in all 5 languages.
-7. Build + typecheck → ONE deploy → v2.2 additions appended to the testing checklist:
+7. Part 5 cleanup pass (admin session split last — it touches login flows; re-test admin sign-in immediately).
+8. Build + typecheck → ONE deploy → test from **docs/TESTING-CHECKLIST-V2.2.md** (the consolidated final checklist):
    - shop search/chips/sort/filters/badges, gallery swipe, inline stock edit, category CRUD
    - company rename end-to-end (page loads + a bot message + an admin email)
    - sections render on storefront; physical absent from My Store list; Shop card position moves
    - webinar: buy → bot button → /w/ link works for buyer (twice, two devices), forwarded link blocked, second buyer's link works, reminder button works
 
-**Not in v2.2** (unchanged): payments model, commission engine, funnels/flows, admin panel, Chapa/R2 guides.
+**Not in v2.2** (unchanged): payments model, commission engine, funnels/flows, admin panel core, Chapa/R2 guides — external-world switches live in docs/LAUNCH-SWITCHES.md.
